@@ -797,6 +797,7 @@
 
         .actions-bar {
             display: flex;
+            flex-wrap: wrap;
             gap: 16px;
             align-items: center;
             background: var(--card-bg);
@@ -1307,7 +1308,6 @@
                 </div>
                 <button class="btn-print" onclick="window.print()">🖨️ พิมพ์รายงาน A4</button>
                 <button class="btn-print btn-pdf" style="background: rgba(239, 68, 68, 0.12); border-color: #f87171; color: #fca5a5;" onclick="downloadPDF()">🔴 ดาวน์โหลด PDF</button>
-                <button class="btn-export btn-excel" style="background: rgba(16, 185, 129, 0.12); border-color: #34d399; color: #6ee7b7;" onclick="exportExcel()">🟢 ส่งออก Excel</button>
                 <button class="btn-export" onclick="exportCSV()">📥 ส่งออก CSV</button>
             </div>
 
