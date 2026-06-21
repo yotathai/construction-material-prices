@@ -965,7 +965,7 @@
         @media print {
             @page {
                 size: A4 landscape;
-                margin: 20mm; /* 2cm safety margins on all sides for document archiving and binding */
+                margin: 1.5cm; /* 1.5cm safety margins on all sides */
             }
             body, table, th, td, tr, div, span, h1, h2, p {
                 -webkit-print-color-adjust: exact !important;
@@ -2538,7 +2538,7 @@
             const pdfContainer = document.createElement('div');
             pdfContainer.style.background = '#ffffff';
             pdfContainer.style.color = '#000000';
-            pdfContainer.style.padding = '15mm 20mm'; // 2cm safety side margins, 1.5cm top/bottom margins
+            pdfContainer.style.padding = '1.5cm'; // 1.5cm safety margins on all sides
             pdfContainer.style.fontFamily = 'Sarabun, sans-serif';
             pdfContainer.style.width = '297mm'; // A4 landscape width
             pdfContainer.style.boxSizing = 'border-box';
