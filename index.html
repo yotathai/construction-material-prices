@@ -2428,7 +2428,7 @@
                 <table>
                     <thead>
                         <tr>
-                            \${headers.map(h => \`<th>\${h}</th>\`).join('')}
+                            ${headers.map(h => `<th>${h}</th>`).join('')}
                         </tr>
                     </thead>
                     <tbody>
@@ -2441,25 +2441,25 @@
                 const unit = item.unitName || '';
                 
                 let cells = [
-                    \`<td class="text-center" style="mso-number-format:'\\\\@';">\${code}</td>\`,
-                    \`<td>\${name}</td>\`,
-                    \`<td class="text-center">\${unit}</td>\`
+                    `<td class="text-center" style="mso-number-format:'\\@';">${code}</td>`,
+                    `<td>${name}</td>`,
+                    `<td class="text-center">${unit}</td>`
                 ];
                 
                 if (mode === 'single') {
                     const price = item.prices[targetCode] !== null ? item.prices[targetCode].toFixed(2) : '';
-                    cells.push(\`<td class="text-right">\${price}</td>\`);
+                    cells.push(`<td class="text-right">${price}</td>`);
                 }
                 else if (mode === 'yearly') {
                     for (let m = 1; m <= 12; m++) {
                         const price = item.prices[String(m)] !== null ? item.prices[String(m)].toFixed(2) : '';
-                        cells.push(\`<td class="text-right">\${price}</td>\`);
+                        cells.push(`<td class="text-right">${price}</td>`);
                     }
                 }
                 else if (mode === 'history') {
                     for (let offset = 0; offset < 4; offset++) {
                         const price = item.prices[String(offset)] !== null ? item.prices[String(offset)].toFixed(2) : '';
-                        cells.push(\`<td class="text-right">\${price}</td>\`);
+                        cells.push(`<td class="text-right">${price}</td>`);
                     }
                     const currentPrice = item.prices["0"];
                     const prevPrice = item.prices["1"];
@@ -2471,12 +2471,12 @@
                         if (pct > 0) cellStyle = "style='color:#ef4444; font-weight:bold;'";
                         else if (pct < 0) cellStyle = "style='color:#10b981; font-weight:bold;'";
                     }
-                    cells.push(\`<td class="text-center" \${cellStyle}>\${diffVal}</td>\`);
+                    cells.push(`<td class="text-center" ${cellStyle}>${diffVal}</td>`);
                 }
                 else {
                     const targetPrice = item.prices[targetCode];
                     const targetText = targetPrice !== null ? targetPrice.toFixed(2) : '';
-                    cells.push(\`<td class="text-right">\${targetText}</td>\`);
+                    cells.push(`<td class="text-right">${targetText}</td>`);
                     
                     compareCodes.forEach(cCode => {
                         const price = item.prices[cCode];
@@ -2488,18 +2488,18 @@
                         }
                         
                         if (isCheapest) {
-                            cells.push(\`<td class="text-right cheapest">\${priceText}</td>\`);
+                            cells.push(`<td class="text-right cheapest">${priceText}</td>`);
                         } else {
-                            cells.push(\`<td class="text-right">\${priceText}</td>\`);
+                            cells.push(`<td class="text-right">${priceText}</td>`);
                         }
                     });
                     
                     const cheapestText = item.cheapestPrice !== null ? item.cheapestPrice.toFixed(2) : '';
-                    cells.push(\`<td class="text-right cheapest">\${cheapestText}</td>\`);
-                    cells.push(\`<td class="text-center">\${provinceNames[item.cheapestProvinceCode] || ''}</td>\`);
+                    cells.push(`<td class="text-right cheapest">${cheapestText}</td>`);
+                    cells.push(`<td class="text-center">${provinceNames[item.cheapestProvinceCode] || ''}</td>`);
                 }
                 
-                html += \`<tr>\${cells.join('')}</tr>\`;
+                html += `<tr>${cells.join('')}</tr>`;
             });
             
             html += `
@@ -2521,7 +2521,6 @@
             document.body.removeChild(link);
         }
 
-        // Export data directly to PDF with clean layout
         function downloadPDF() {
             if (comparisonResults.length === 0) {
                 alert("ไม่มีข้อมูลที่จะส่งออก");
