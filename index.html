@@ -8,11 +8,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- html2pdf.js Library for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        // Immediately apply saved theme to prevent flashing
+        const savedTheme = localStorage.getItem('tpso-theme') || 'dark-blue';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
     
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: rgba(17, 24, 39, 0.7);
+        :root, html[data-theme="dark-blue"] {
+            --bg-color: #0b111e;
+            --top-panel-bg: rgba(11, 17, 30, 0.85);
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --card-bg-sub: rgba(31, 41, 55, 0.3);
+            --drawer-bg: rgba(17, 24, 39, 0.98);
             --border-color: rgba(255, 255, 255, 0.08);
             --accent-primary: #3b82f6;
             --accent-primary-hover: #2563eb;
@@ -20,8 +30,309 @@
             --accent-warning: #f59e0b;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
+            --input-bg: rgba(31, 41, 55, 0.6);
+            --table-header-bg: rgba(255, 255, 255, 0.02);
+            --table-hover-bg: rgba(255, 255, 255, 0.01);
+            --bg-gradient: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+            --chip-bg: rgba(59, 130, 246, 0.15);
+            --chip-border: rgba(59, 130, 246, 0.35);
+            --chip-text: #93c5fd;
+            --logo-gradient: linear-gradient(135deg, #60a5fa, #34d399);
             --font-family: 'Sarabun', 'Outfit', sans-serif;
         }
+
+        /* 2. Deep Emerald */
+        html[data-theme="dark-green"] {
+            --bg-color: #061a14;
+            --top-panel-bg: rgba(6, 26, 20, 0.85);
+            --card-bg: rgba(11, 29, 23, 0.75);
+            --card-bg-sub: rgba(16, 48, 38, 0.3);
+            --drawer-bg: rgba(11, 29, 23, 0.98);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-primary: #10b981;
+            --accent-primary-hover: #059669;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --text-main: #f0fdf4;
+            --text-muted: #86efac;
+            --input-bg: rgba(16, 48, 38, 0.6);
+            --table-header-bg: rgba(255, 255, 255, 0.02);
+            --table-hover-bg: rgba(255, 255, 255, 0.01);
+            --bg-gradient: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 50%);
+            --chip-bg: rgba(16, 185, 129, 0.15);
+            --chip-border: rgba(16, 185, 129, 0.35);
+            --chip-text: #a7f3d0;
+            --logo-gradient: linear-gradient(135deg, #34d399, #60a5fa);
+        }
+
+        /* 3. Cyberpunk Purple */
+        html[data-theme="dark-purple"] {
+            --bg-color: #0f091c;
+            --top-panel-bg: rgba(15, 9, 28, 0.85);
+            --card-bg: rgba(23, 15, 41, 0.75);
+            --card-bg-sub: rgba(36, 22, 66, 0.3);
+            --drawer-bg: rgba(23, 15, 41, 0.98);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-primary: #a855f7;
+            --accent-primary-hover: #9333ea;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --text-main: #faf5ff;
+            --text-muted: #c084fc;
+            --input-bg: rgba(36, 22, 66, 0.6);
+            --table-header-bg: rgba(255, 255, 255, 0.02);
+            --table-hover-bg: rgba(255, 255, 255, 0.01);
+            --bg-gradient: radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.08) 0px, transparent 50%);
+            --chip-bg: rgba(168, 85, 247, 0.15);
+            --chip-border: rgba(168, 85, 247, 0.35);
+            --chip-text: #e9d5ff;
+            --logo-gradient: linear-gradient(135deg, #c084fc, #f472b6);
+        }
+
+        /* 4. Amber Orange */
+        html[data-theme="dark-orange"] {
+            --bg-color: #120904;
+            --top-panel-bg: rgba(18, 9, 4, 0.85);
+            --card-bg: rgba(29, 16, 10, 0.75);
+            --card-bg-sub: rgba(46, 26, 16, 0.3);
+            --drawer-bg: rgba(29, 16, 10, 0.98);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-primary: #f97316;
+            --accent-primary-hover: #ea580c;
+            --accent-success: #10b981;
+            --accent-warning: #fbbf24;
+            --text-main: #fff7ed;
+            --text-muted: #fdba74;
+            --input-bg: rgba(46, 26, 16, 0.6);
+            --table-header-bg: rgba(255, 255, 255, 0.02);
+            --table-hover-bg: rgba(255, 255, 255, 0.01);
+            --bg-gradient: radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(234, 88, 12, 0.08) 0px, transparent 50%);
+            --chip-bg: rgba(249, 115, 22, 0.15);
+            --chip-border: rgba(249, 115, 22, 0.35);
+            --chip-text: #ffedd5;
+            --logo-gradient: linear-gradient(135deg, #fdba74, #f59e0b);
+        }
+
+        /* 5. Rose Pink */
+        html[data-theme="dark-rose"] {
+            --bg-color: #1c0d16;
+            --top-panel-bg: rgba(28, 13, 22, 0.85);
+            --card-bg: rgba(43, 19, 32, 0.75);
+            --card-bg-sub: rgba(69, 29, 51, 0.3);
+            --drawer-bg: rgba(43, 19, 32, 0.98);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-primary: #ec4899;
+            --accent-primary-hover: #db2777;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --text-main: #fff1f2;
+            --text-muted: #f472b6;
+            --input-bg: rgba(69, 29, 51, 0.6);
+            --table-header-bg: rgba(255, 255, 255, 0.02);
+            --table-hover-bg: rgba(255, 255, 255, 0.01);
+            --bg-gradient: radial-gradient(at 0% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.08) 0px, transparent 50%);
+            --chip-bg: rgba(236, 72, 153, 0.15);
+            --chip-border: rgba(236, 72, 153, 0.35);
+            --chip-text: #fce7f3;
+            --logo-gradient: linear-gradient(135deg, #f472b6, #c084fc);
+        }
+
+        /* 6. Midnight Charcoal */
+        html[data-theme="dark-charcoal"] {
+            --bg-color: #0e0e11;
+            --top-panel-bg: rgba(14, 14, 17, 0.85);
+            --card-bg: rgba(24, 24, 27, 0.75);
+            --card-bg-sub: rgba(39, 39, 42, 0.3);
+            --drawer-bg: rgba(24, 24, 27, 0.98);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-primary: #9ca3af;
+            --accent-primary-hover: #cbd5e1;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --input-bg: rgba(39, 39, 42, 0.6);
+            --table-header-bg: rgba(255, 255, 255, 0.02);
+            --table-hover-bg: rgba(255, 255, 255, 0.01);
+            --bg-gradient: radial-gradient(at 0% 0%, rgba(161, 161, 170, 0.1) 0px, transparent 50%);
+            --chip-bg: rgba(156, 163, 175, 0.15);
+            --chip-border: rgba(156, 163, 175, 0.35);
+            --chip-text: #e5e7eb;
+            --logo-gradient: linear-gradient(135deg, #9ca3af, #e5e7eb);
+        }
+
+        /* 7. High-Contrast Yellow */
+        html[data-theme="dark-yellow"] {
+            --bg-color: #050505;
+            --top-panel-bg: rgba(5, 5, 5, 0.85);
+            --card-bg: rgba(18, 18, 18, 0.85);
+            --card-bg-sub: rgba(30, 30, 30, 0.4);
+            --drawer-bg: rgba(18, 18, 18, 0.98);
+            --border-color: rgba(250, 204, 21, 0.15);
+            --accent-primary: #facc15;
+            --accent-primary-hover: #eab308;
+            --accent-success: #10b981;
+            --accent-warning: #fbbf24;
+            --text-main: #ffffff;
+            --text-muted: #fef08a;
+            --input-bg: rgba(30, 30, 30, 0.6);
+            --table-header-bg: rgba(255, 255, 255, 0.02);
+            --table-hover-bg: rgba(255, 255, 255, 0.01);
+            --bg-gradient: none;
+            --chip-bg: rgba(250, 204, 21, 0.15);
+            --chip-border: rgba(250, 204, 21, 0.35);
+            --chip-text: #fef08a;
+            --logo-gradient: linear-gradient(135deg, #facc15, #ffffff);
+        }
+
+        /* 8. Light Teal */
+        html[data-theme="light-teal"] {
+            --bg-color: #f0fdfa;
+            --top-panel-bg: rgba(240, 253, 250, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-bg-sub: rgba(13, 148, 136, 0.06);
+            --drawer-bg: rgba(255, 255, 255, 0.98);
+            --border-color: rgba(13, 148, 136, 0.15);
+            --accent-primary: #0d9488;
+            --accent-primary-hover: #0f766e;
+            --accent-success: #059669;
+            --accent-warning: #d97706;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --table-header-bg: rgba(13, 148, 136, 0.05);
+            --table-hover-bg: rgba(13, 148, 136, 0.02);
+            --bg-gradient: radial-gradient(at 0% 0%, rgba(13, 148, 136, 0.1) 0px, transparent 50%);
+            --chip-bg: rgba(13, 148, 136, 0.1);
+            --chip-border: rgba(13, 148, 136, 0.25);
+            --chip-text: #0f766e;
+            --logo-gradient: linear-gradient(135deg, #0d9488, #0f172a);
+        }
+
+        /* 9. Light Blue */
+        html[data-theme="light-blue"] {
+            --bg-color: #f0f9ff;
+            --top-panel-bg: rgba(240, 249, 255, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-bg-sub: rgba(37, 99, 235, 0.06);
+            --drawer-bg: rgba(255, 255, 255, 0.98);
+            --border-color: rgba(37, 99, 235, 0.15);
+            --accent-primary: #2563eb;
+            --accent-primary-hover: #1d4ed8;
+            --accent-success: #059669;
+            --accent-warning: #d97706;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --table-header-bg: rgba(37, 99, 235, 0.05);
+            --table-hover-bg: rgba(37, 99, 235, 0.02);
+            --bg-gradient: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%);
+            --chip-bg: rgba(37, 99, 235, 0.1);
+            --chip-border: rgba(37, 99, 235, 0.25);
+            --chip-text: #1d4ed8;
+            --logo-gradient: linear-gradient(135deg, #2563eb, #0f172a);
+         }
+
+         /* 10. Light Lavender */
+         html[data-theme="light-lavender"] {
+             --bg-color: #faf5ff;
+             --top-panel-bg: rgba(250, 245, 255, 0.85);
+             --card-bg: rgba(255, 255, 255, 0.85);
+             --card-bg-sub: rgba(124, 58, 237, 0.06);
+             --drawer-bg: rgba(255, 255, 255, 0.98);
+             --border-color: rgba(124, 58, 237, 0.15);
+             --accent-primary: #7c3aed;
+             --accent-primary-hover: #6d28d9;
+             --accent-success: #059669;
+             --accent-warning: #d97706;
+             --text-main: #0f172a;
+             --text-muted: #475569;
+             --input-bg: rgba(255, 255, 255, 0.9);
+             --table-header-bg: rgba(124, 58, 237, 0.05);
+             --table-hover-bg: rgba(124, 58, 237, 0.02);
+             --bg-gradient: radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.1) 0px, transparent 50%);
+             --chip-bg: rgba(124, 58, 237, 0.1);
+             --chip-border: rgba(124, 58, 237, 0.25);
+             --chip-text: #6d28d9;
+             --logo-gradient: linear-gradient(135deg, #7c3aed, #0f172a);
+         }
+
+         /* 11. Light Peach */
+         html[data-theme="light-peach"] {
+             --bg-color: #fff7ed;
+             --top-panel-bg: rgba(255, 247, 237, 0.85);
+             --card-bg: rgba(255, 255, 255, 0.85);
+             --card-bg-sub: rgba(234, 88, 12, 0.06);
+             --drawer-bg: rgba(255, 255, 255, 0.98);
+             --border-color: rgba(234, 88, 12, 0.15);
+             --accent-primary: #ea580c;
+             --accent-primary-hover: #c2410c;
+             --accent-success: #059669;
+             --accent-warning: #d97706;
+             --text-main: #0f172a;
+             --text-muted: #475569;
+             --input-bg: rgba(255, 255, 255, 0.9);
+             --table-header-bg: rgba(234, 88, 12, 0.05);
+             --table-hover-bg: rgba(234, 88, 12, 0.02);
+             --bg-gradient: radial-gradient(at 0% 0%, rgba(234, 88, 12, 0.1) 0px, transparent 50%);
+             --chip-bg: rgba(234, 88, 12, 0.1);
+             --chip-border: rgba(234, 88, 12, 0.25);
+             --chip-text: #c2410c;
+             --logo-gradient: linear-gradient(135deg, #ea580c, #0f172a);
+         }
+
+         /* 12. Light Rose */
+         html[data-theme="light-rose"] {
+             --bg-color: #fff1f2;
+             --top-panel-bg: rgba(255, 241, 242, 0.85);
+             --card-bg: rgba(255, 255, 255, 0.85);
+             --card-bg-sub: rgba(219, 39, 119, 0.06);
+             --drawer-bg: rgba(255, 255, 255, 0.98);
+             --border-color: rgba(219, 39, 119, 0.15);
+             --accent-primary: #db2777;
+             --accent-primary-hover: #be185d;
+             --accent-success: #059669;
+             --accent-warning: #d97706;
+             --text-main: #0f172a;
+             --text-muted: #475569;
+             --input-bg: rgba(255, 255, 255, 0.9);
+             --table-header-bg: rgba(219, 39, 119, 0.05);
+             --table-hover-bg: rgba(219, 39, 119, 0.02);
+             --bg-gradient: radial-gradient(at 0% 0%, rgba(219, 39, 119, 0.1) 0px, transparent 50%);
+             --chip-bg: rgba(219, 39, 119, 0.1);
+             --chip-border: rgba(219, 39, 119, 0.25);
+             --chip-text: #be185d;
+             --logo-gradient: linear-gradient(135deg, #db2777, #0f172a);
+         }
+
+         .theme-swatch {
+             transition: all 0.2s ease;
+             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+         }
+         .theme-swatch:hover {
+             transform: scale(1.2);
+         }
+         .theme-swatch.active {
+             transform: scale(1.3);
+             border-color: #ffffff !important;
+             box-shadow: 0 0 0 2px var(--accent-primary), 0 2px 4px rgba(0,0,0,0.3);
+         }
+         html[data-theme^="light-"] .theme-swatch.active {
+             border-color: #0f172a !important;
+         }
+         
+         .btn-print.btn-pdf:hover {
+             background: #ef4444 !important;
+             color: white !important;
+             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+         }
+         .btn-export.btn-excel:hover {
+             background: #10b981 !important;
+             color: white !important;
+             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+         }
+
+         --font-family: 'Sarabun', 'Outfit', sans-serif;
 
         * {
             box-sizing: border-box;
@@ -35,9 +346,7 @@
             font-family: var(--font-family);
             min-height: 100vh;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+            background-image: var(--bg-gradient);
             background-attachment: fixed;
         }
 
@@ -52,7 +361,7 @@
 
         /* Top Control Panel styling */
         .top-panel {
-            background: rgba(11, 15, 25, 0.85);
+            background: var(--top-panel-bg);
             border-bottom: 1px solid var(--border-color);
             padding: 24px 40px;
             display: flex;
@@ -81,7 +390,7 @@
         .logo-section h1 {
             font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(135deg, #60a5fa, #34d399);
+            background: var(--logo-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 4px;
@@ -237,9 +546,9 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.35);
-            color: #93c5fd;
+            background: var(--chip-bg);
+            border: 1px solid var(--chip-border);
+            color: var(--chip-text);
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 12px;
@@ -332,7 +641,7 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease, border-width 0.4s ease;
-            background: rgba(17, 24, 39, 0.95);
+            background: var(--drawer-bg);
             border: 0 solid var(--border-color);
             border-radius: 12px;
             backdrop-filter: blur(10px);
@@ -352,8 +661,8 @@
         }
 
         .region-card {
-            background: rgba(255, 255, 255, 0.015);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: var(--card-bg-sub);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 16px;
             display: flex;
@@ -415,7 +724,7 @@
         }
 
         select, input[type="text"] {
-            background: rgba(31, 41, 55, 0.6);
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 12px;
@@ -558,7 +867,7 @@
         }
 
         th {
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--table-header-bg);
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -571,7 +880,7 @@
         }
 
         tr:hover td {
-            background: rgba(255, 255, 255, 0.01);
+            background: var(--table-hover-bg);
         }
 
         .category-badge {
@@ -658,11 +967,18 @@
                 size: A4 landscape;
                 margin: 20mm; /* 2cm safety margins on all sides for document archiving and binding */
             }
+            body, table, th, td, tr, div, span, h1, h2, p {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
             body {
                 background: white !important;
                 color: black !important;
                 font-size: 10pt !important;
                 font-family: 'Sarabun', sans-serif !important;
+            }
+            thead {
+                display: table-header-group !important;
             }
             .top-panel, .actions-bar, .loading-overlay, .helper-btn-group, .btn-export, .btn-print, .segmented-control, .mode-container {
                 display: none !important;
@@ -778,13 +1094,32 @@
 
     <div class="app-container">
         
-        <!-- Top control panel -->
         <header class="top-panel">
             <!-- Row 1: Logo & Mode Selection & Fetch Button -->
             <div class="top-panel-row-1">
-                <div class="logo-section">
-                    <h1>ระบบดึงข้อมูลราคาวัสดุก่อสร้างกระทรวงพาณิชย์และเปรียบเทียบราคา</h1>
-                    <p>พัฒนาโดย yotathai</p>
+                <div class="logo-section-group" style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+                    <div class="logo-section">
+                        <h1>ระบบดึงข้อมูลราคาวัสดุก่อสร้างกระทรวงพาณิชย์และเปรียบเทียบราคา</h1>
+                        <p>พัฒนาโดย yotathai</p>
+                    </div>
+                    <!-- Theme Selector Swatches -->
+                    <div class="theme-selector-container" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.04); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-color);">
+                        <span style="font-size: 11px; font-weight: bold; color: var(--text-muted);">โทนสี:</span>
+                        <div class="theme-swatches" style="display: flex; gap: 6px; align-items: center;">
+                            <button class="theme-swatch active" data-theme="dark-blue" style="background-color: #3b82f6; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('dark-blue')" title="Classic Dark Blue"></button>
+                            <button class="theme-swatch" data-theme="dark-green" style="background-color: #10b981; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('dark-green')" title="Deep Emerald"></button>
+                            <button class="theme-swatch" data-theme="dark-purple" style="background-color: #a855f7; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('dark-purple')" title="Cyberpunk Purple"></button>
+                            <button class="theme-swatch" data-theme="dark-orange" style="background-color: #f97316; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('dark-orange')" title="Amber Orange"></button>
+                            <button class="theme-swatch" data-theme="dark-rose" style="background-color: #ec4899; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('dark-rose')" title="Rose Pink"></button>
+                            <button class="theme-swatch" data-theme="dark-charcoal" style="background-color: #9ca3af; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('dark-charcoal')" title="Midnight Charcoal"></button>
+                            <button class="theme-swatch" data-theme="dark-yellow" style="background-color: #facc15; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('dark-yellow')" title="High-Contrast Yellow"></button>
+                            <button class="theme-swatch" data-theme="light-teal" style="background-color: #0d9488; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('light-teal')" title="Light Teal"></button>
+                            <button class="theme-swatch" data-theme="light-blue" style="background-color: #2563eb; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('light-blue')" title="Light Blue"></button>
+                            <button class="theme-swatch" data-theme="light-lavender" style="background-color: #7c3aed; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('light-lavender')" title="Light Lavender"></button>
+                            <button class="theme-swatch" data-theme="light-peach" style="background-color: #ea580c; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('light-peach')" title="Light Peach"></button>
+                            <button class="theme-swatch" data-theme="light-rose" style="background-color: #db2777; width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;" onclick="changeTheme('light-rose')" title="Light Rose"></button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="mode-container" style="gap: 16px;">
@@ -970,8 +1305,10 @@
                         <option value="21">21 - เซรามิกห้องน้ำ</option>
                     </select>
                 </div>
-                <button class="btn-print" onclick="window.print()">🖨️ พิมพ์รายงาน A4 (แนวนอน)</button>
-                <button class="btn-export" onclick="exportCSV()">📥 ส่งออกข้อมูล (CSV)</button>
+                <button class="btn-print" onclick="window.print()">🖨️ พิมพ์รายงาน A4</button>
+                <button class="btn-print btn-pdf" style="background: rgba(239, 68, 68, 0.12); border-color: #f87171; color: #fca5a5;" onclick="downloadPDF()">🔴 ดาวน์โหลด PDF</button>
+                <button class="btn-export btn-excel" style="background: rgba(16, 185, 129, 0.12); border-color: #34d399; color: #6ee7b7;" onclick="exportExcel()">🟢 ส่งออก Excel</button>
+                <button class="btn-export" onclick="exportCSV()">📥 ส่งออก CSV</button>
             </div>
 
             <div class="table-container">
@@ -1977,6 +2314,317 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        // Change application color theme
+        function changeTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('tpso-theme', themeName);
+            
+            // Update active state in swatches UI
+            document.querySelectorAll('.theme-swatch').forEach(swatch => {
+                if (swatch.getAttribute('data-theme') === themeName) {
+                    swatch.classList.add('active');
+                } else {
+                    swatch.classList.remove('active');
+                }
+            });
+        }
+        
+        // Initialize theme swatches active state on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('tpso-theme') || 'dark-blue';
+            changeTheme(savedTheme);
+        });
+
+        // Download data as Excel (HTML format with styled table sheet)
+        function exportExcel() {
+            if (comparisonResults.length === 0) {
+                alert("ไม่มีข้อมูลที่จะส่งออก");
+                return;
+            }
+            
+            const targetCode = document.getElementById('targetProvince').value;
+            const mode = document.querySelector('input[name="displayMode"]:checked').value;
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const month = parseInt(document.getElementById('monthSelect').value);
+            let compareCodes = [];
+            
+            if (mode !== 'single' && mode !== 'yearly' && mode !== 'history') {
+                const checkedBoxes = document.querySelectorAll('.region-checkboxes input[type="checkbox"]:checked');
+                compareCodes = Array.from(checkedBoxes).map(cb => cb.value);
+                
+                const compareCentral = document.getElementById('compareCentral').checked;
+                if (compareCentral && !compareCodes.includes("10") && targetCode !== "10") {
+                    compareCodes.push("10");
+                }
+            }
+            
+            const provinceNames = {};
+            provinceNames[targetCode] = document.getElementById('targetProvince').options[document.getElementById('targetProvince').selectedIndex].text;
+            document.querySelectorAll('.region-checkboxes input[type="checkbox"]').forEach(cb => {
+                provinceNames[cb.value] = cb.getAttribute('data-name');
+            });
+            provinceNames["10"] = "ส่วนกลาง";
+            
+            // Build headers
+            let headers = ["รหัสสินค้า", "รายการวัสดุก่อสร้าง", "หน่วย"];
+            if (mode === 'single') {
+                headers.push(`ราคา: ${provinceNames[targetCode]}`);
+            } else if (mode === 'yearly') {
+                for (let m = 1; m <= 12; m++) {
+                    headers.push(monthNamesShort[m]);
+                }
+            } else if (mode === 'history') {
+                headers.push(
+                    getPastMonthLabel(year, month, 0),
+                    getPastMonthLabel(year, month, 1),
+                    getPastMonthLabel(year, month, 2),
+                    getPastMonthLabel(year, month, 3),
+                    "อัตราการเปลี่ยน MoM"
+                );
+            } else {
+                headers.push(`ราคา: ${provinceNames[targetCode]}`);
+                compareCodes.forEach(code => {
+                    headers.push(`ราคา: ${provinceNames[code]}`);
+                });
+                headers.push("ราคาต่ำสุดแนะนำ", "จังหวัดที่ราคาต่ำสุด");
+            }
+            
+            // Report title text
+            const searchInputVal = document.getElementById('searchInput').value.trim();
+            const filterCategoryVal = document.getElementById('categoryFilter').value;
+            let filterText = "";
+            if (searchInputVal) filterText += ` (ค้นหา: "${searchInputVal}")`;
+            if (filterCategoryVal !== 'all') filterText += ` (หมวดหมู่: ${filterCategoryVal})`;
+            
+            let descText = "";
+            if (mode === 'single') descText = `ราคาวัสดุก่อสร้าง จังหวัด${provinceNames[targetCode]} ณ เดือน${monthNames[month]} พ.ศ. ${year + 543}${filterText}`;
+            else if (mode === 'yearly') descText = `ราคาวัสดุก่อสร้าง จังหวัด${provinceNames[targetCode]} รายปี พ.ศ. ${year + 543}${filterText}`;
+            else if (mode === 'history') descText = `เปรียบเทียบราคาวัสดุก่อสร้างย้อนหลัง จังหวัด${provinceNames[targetCode]} ณ เดือน${monthNames[month]} พ.ศ. ${year + 543}${filterText}`;
+            else descText = `เปรียบเทียบราคาวัสดุก่อสร้าง จังหวัด${provinceNames[targetCode]} กับจังหวัดข้างเคียง ณ เดือน${monthNames[month]} พ.ศ. ${year + 543}${filterText}`;
+
+            let html = `
+            <html xmlns:o="urn:schemas-microsoft-xml-office:office" xmlns:x="urn:schemas-microsoft-xml-office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+            <head>
+            <meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">
+            <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>ราคาวัสดุ</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+            <style>
+                body { font-family: 'Sarabun', sans-serif; margin: 20px; }
+                h2 { font-size: 16px; font-weight: bold; margin-bottom: 5px; color: #1e293b; }
+                p { font-size: 12px; margin-bottom: 20px; color: #475569; }
+                table { border-collapse: collapse; width: 100%; }
+                th { background-color: #cbd5e1; color: #0f172a; border: 0.5pt solid #94a3b8; padding: 8px; font-weight: bold; font-size: 12px; text-align: center; }
+                td { border: 0.5pt solid #cbd5e1; padding: 8px; font-size: 11px; color: #334155; }
+                .text-center { text-align: center; }
+                .text-right { text-align: right; }
+                .cheapest { background-color: #d1fae5; color: #065f46; font-weight: bold; }
+                .saving { color: #047857; font-weight: bold; font-size: 9px; }
+            </style>
+            </head>
+            <body>
+                <h2>ระบบดึงข้อมูลราคาวัสดุก่อสร้างกระทรวงพาณิชย์และเปรียบเทียบราคา</h2>
+                <p><strong>รายงาน:</strong> ${descText}<br><strong>วันที่ดึงข้อมูล:</strong> ${new Date().toLocaleString('th-TH')}</p>
+                <table>
+                    <thead>
+                        <tr>
+                            \${headers.map(h => \`<th>\${h}</th>\`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // Build rows
+            comparisonResults.forEach(item => {
+                const code = item.commodityCode;
+                const name = item.commodityNameTH;
+                const unit = item.unitName || '';
+                
+                let cells = [
+                    \`<td class="text-center" style="mso-number-format:'\\\\@';">\${code}</td>\`,
+                    \`<td>\${name}</td>\`,
+                    \`<td class="text-center">\${unit}</td>\`
+                ];
+                
+                if (mode === 'single') {
+                    const price = item.prices[targetCode] !== null ? item.prices[targetCode].toFixed(2) : '';
+                    cells.push(\`<td class="text-right">\${price}</td>\`);
+                }
+                else if (mode === 'yearly') {
+                    for (let m = 1; m <= 12; m++) {
+                        const price = item.prices[String(m)] !== null ? item.prices[String(m)].toFixed(2) : '';
+                        cells.push(\`<td class="text-right">\${price}</td>\`);
+                    }
+                }
+                else if (mode === 'history') {
+                    for (let offset = 0; offset < 4; offset++) {
+                        const price = item.prices[String(offset)] !== null ? item.prices[String(offset)].toFixed(2) : '';
+                        cells.push(\`<td class="text-right">\${price}</td>\`);
+                    }
+                    const currentPrice = item.prices["0"];
+                    const prevPrice = item.prices["1"];
+                    let diffVal = "";
+                    let cellStyle = "";
+                    if (currentPrice !== null && currentPrice !== undefined && prevPrice !== null && prevPrice !== undefined && prevPrice > 0) {
+                        const pct = (((currentPrice - prevPrice) / prevPrice) * 100);
+                        diffVal = pct.toFixed(1) + "%";
+                        if (pct > 0) cellStyle = "style='color:#ef4444; font-weight:bold;'";
+                        else if (pct < 0) cellStyle = "style='color:#10b981; font-weight:bold;'";
+                    }
+                    cells.push(\`<td class="text-center" \${cellStyle}>\${diffVal}</td>\`);
+                }
+                else {
+                    const targetPrice = item.prices[targetCode];
+                    const targetText = targetPrice !== null ? targetPrice.toFixed(2) : '';
+                    cells.push(\`<td class="text-right">\${targetText}</td>\`);
+                    
+                    compareCodes.forEach(cCode => {
+                        const price = item.prices[cCode];
+                        const priceText = price !== null ? price.toFixed(2) : '';
+                        
+                        let isCheapest = false;
+                        if (price !== null && item.cheapestPrice !== null && Math.abs(price - item.cheapestPrice) < 0.001 && item.cheapestProvinceCode === cCode) {
+                            isCheapest = true;
+                        }
+                        
+                        if (isCheapest) {
+                            cells.push(\`<td class="text-right cheapest">\${priceText}</td>\`);
+                        } else {
+                            cells.push(\`<td class="text-right">\${priceText}</td>\`);
+                        }
+                    });
+                    
+                    const cheapestText = item.cheapestPrice !== null ? item.cheapestPrice.toFixed(2) : '';
+                    cells.push(\`<td class="text-right cheapest">\${cheapestText}</td>\`);
+                    cells.push(\`<td class="text-center">\${provinceNames[item.cheapestProvinceCode] || ''}</td>\`);
+                }
+                
+                html += \`<tr>\${cells.join('')}</tr>\`;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            </body>
+            </html>
+            `;
+            
+            const blob = new Blob(['\uFEFF' + html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `รายงานราคาวัสดุ_${provinceNames[targetCode]}_${year}_${month}.xls`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Export data directly to PDF with clean layout
+        function downloadPDF() {
+            if (comparisonResults.length === 0) {
+                alert("ไม่มีข้อมูลที่จะส่งออก");
+                return;
+            }
+            
+            // Get meta info
+            const targetProvinceText = document.getElementById('targetProvince').options[document.getElementById('targetProvince').selectedIndex].text;
+            const year = document.getElementById('yearSelect').value;
+            const month = document.getElementById('monthSelect').value;
+            const mode = document.querySelector('input[name="displayMode"]:checked').value;
+            const filename = `รายงานราคาวัสดุ_${targetProvinceText}_${year}_${month}.pdf`;
+            
+            // Create a clean layout container for PDF export
+            const pdfContainer = document.createElement('div');
+            pdfContainer.style.background = '#ffffff';
+            pdfContainer.style.color = '#000000';
+            pdfContainer.style.padding = '15mm 20mm'; // 2cm safety side margins, 1.5cm top/bottom margins
+            pdfContainer.style.fontFamily = 'Sarabun, sans-serif';
+            pdfContainer.style.width = '297mm'; // A4 landscape width
+            pdfContainer.style.boxSizing = 'border-box';
+            
+            // 1. Report Header
+            const headerDiv = document.createElement('div');
+            headerDiv.style.borderBottom = '2px solid #000000';
+            headerDiv.style.paddingBottom = '10px';
+            headerDiv.style.marginBottom = '15px';
+            
+            const titleH1 = document.createElement('h1');
+            titleH1.textContent = "รายงานราคาวัสดุก่อสร้างกระทรวงพาณิชย์และเปรียบเทียบราคา";
+            titleH1.style.fontSize = '18px';
+            titleH1.style.fontWeight = 'bold';
+            titleH1.style.color = '#000000';
+            titleH1.style.margin = '0 0 5px 0';
+            
+            const subtitleP = document.createElement('p');
+            subtitleP.textContent = "พัฒนาโดย yotathai";
+            subtitleP.style.fontSize = '11px';
+            subtitleP.style.color = '#444444';
+            subtitleP.style.margin = '0 0 5px 0';
+            
+            const metaP = document.createElement('p');
+            metaP.textContent = document.getElementById('printMeta').textContent;
+            metaP.style.fontSize = '11px';
+            metaP.style.fontWeight = 'bold';
+            metaP.style.color = '#111111';
+            metaP.style.margin = '0';
+            
+            headerDiv.appendChild(titleH1);
+            headerDiv.appendChild(subtitleP);
+            headerDiv.appendChild(metaP);
+            pdfContainer.appendChild(headerDiv);
+            
+            // 2. Report Table
+            const tableClone = document.querySelector('.table-container table').cloneNode(true);
+            tableClone.style.width = '100%';
+            tableClone.style.borderCollapse = 'collapse';
+            tableClone.style.fontSize = '8.5pt'; // Slightly smaller for perfect printing fit
+            tableClone.style.color = '#000000';
+            tableClone.style.background = '#ffffff';
+            
+            // Apply inline styles to clone table for PDF rendering
+            const ths = tableClone.querySelectorAll('th');
+            ths.forEach(th => {
+                th.style.border = '1px solid #777777';
+                th.style.padding = '6px 8px';
+                th.style.backgroundColor = '#eaeaea';
+                th.style.color = '#000000';
+                th.style.fontWeight = 'bold';
+                th.style.fontSize = '8.5pt';
+                th.style.textTransform = 'none'; // Avoid force uppercase in PDF
+            });
+            
+            const tds = tableClone.querySelectorAll('td');
+            tds.forEach(td => {
+                td.style.border = '1px solid #777777';
+                td.style.padding = '5px 8px';
+                td.style.color = '#000000';
+                td.style.backgroundColor = '#ffffff';
+            });
+            
+            // Retain green highlighted cells style
+            const cheapestCells = tableClone.querySelectorAll('.cheapest-cell');
+            cheapestCells.forEach(cell => {
+                cell.style.backgroundColor = '#d1fae5';
+                cell.style.border = '1.5px solid #047857';
+                cell.style.fontWeight = 'bold';
+                cell.style.color = '#065f46';
+            });
+            
+            pdfContainer.appendChild(tableClone);
+            
+            // Configure html2pdf options
+            const opt = {
+                margin:       0,
+                filename:     filename,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+            
+            // Generate
+            html2pdf().set(opt).from(pdfContainer).save();
         }
     </script>
 </body>
