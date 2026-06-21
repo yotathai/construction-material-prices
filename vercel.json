@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/tpso/:path*",
+      "destination": "https://index-api.tpso.go.th/OpenApi/:path*"
+    }
+  ]
+}
