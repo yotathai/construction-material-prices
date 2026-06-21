@@ -879,6 +879,11 @@
             flex: none;
         }
 
+        .actions-bar select,
+        .actions-bar input[type="text"] {
+            width: 100%;
+        }
+
         .search-wrapper::before {
             content: "🔍";
             position: absolute;
@@ -1174,6 +1179,18 @@
                 padding: 20px;
                 gap: 20px;
             }
+            .actions-bar {
+                padding: 16px 20px;
+                gap: 12px;
+            }
+            .search-wrapper {
+                flex: 1 1 240px;
+                width: auto;
+            }
+            .actions-bar .form-group {
+                flex: 1 1 200px;
+                width: auto;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1221,10 +1238,12 @@
             .search-wrapper {
                 max-width: 100% !important;
                 width: 100%;
+                flex: none !important;
             }
             .actions-bar .form-group {
                 min-width: 100% !important;
                 width: 100%;
+                flex: none !important;
             }
             .actions-bar button {
                 width: 100%;
