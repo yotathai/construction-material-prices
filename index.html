@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบดึงข้อมูลราคาวัสดุก่อสร้างกระทรวงพาณิชย์และเปรียบเทียบราคา พัฒนาโดย yotathai</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-primary: #3b82f6;
+            --accent-primary-hover: #2563eb;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --font-family: 'Sarabun', 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 100%;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Top Control Panel styling */
+        .top-panel {
+            background: rgba(11, 15, 25, 0.85);
+            border-bottom: 1px solid var(--border-color);
+            padding: 24px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .top-panel-row-1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-brand-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-section h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-section p {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .top-panel-row-2 {
+            display: grid;
+            grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) minmax(280px, 1.5fr);
+            gap: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 24px;
+        }
+
+        .top-panel-row-3 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .form-row-group {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mode-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .segmented-control {
+            display: flex;
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2px;
+            position: relative;
+        }
+
+        .segmented-control input[type="radio"] {
+            display: none;
+        }
+
+        .segmented-control label {
+            text-align: center;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .segmented-control input[type="radio"]:checked + label {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+        }
+
+        .comparison-wrapper {
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .comparison-disabled {
+            opacity: 0.25;
+            pointer-events: none;
+        }
+        
+        .comparison-disabled-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 15, 25, 0.5);
+            backdrop-filter: blur(1px);
+            z-index: 10;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .comparison-disabled .comparison-disabled-overlay {
+            display: flex;
+        }
+
+        .tags-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex-grow: 1;
+        }
+
+        .tags-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-right: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chip-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: #93c5fd;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .chip-tag:hover {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .chip-tag .close-btn {
+            cursor: pointer;
+            color: rgba(147, 197, 253, 0.6);
+            font-size: 11px;
+            font-weight: 700;
+            transition: color 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .chip-tag .close-btn:hover {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .no-tags-placeholder {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .helper-btn-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-helper {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-helper:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            border-color: var(--accent-primary);
+        }
+
+        .btn-toggle-drawer {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: var(--accent-primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-toggle-drawer:hover {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Collapsible selection drawer */
+        .province-drawer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease, border-width 0.4s ease;
+            background: rgba(17, 24, 39, 0.95);
+            border: 0 solid var(--border-color);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .province-drawer.open {
+            max-height: 500px;
+            border-width: 1px;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .regions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .region-card {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .region-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .region-title span.count {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        .region-checkboxes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        /* Checkbox styling */
+        .province-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: background 0.15s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .province-checkbox-label:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .province-checkbox-label input {
+            cursor: pointer;
+        }
+
+        select, input[type="text"] {
+            background: rgba(31, 41, 55, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-fetch {
+            background: linear-gradient(135deg, var(--accent-primary), #1d4ed8);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-fetch:hover {
+            opacity: 0.95;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .btn-fetch:active {
+            transform: scale(0.98) translateY(0);
+        }
+
+        /* Main panel styling */
+        .main-panel {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            overflow-y: auto;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .header-info h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .header-info p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-wrapper {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding-left: 40px;
+            background: rgba(17, 24, 39, 0.4);
+        }
+
+        .search-wrapper::before {
+            content: "🔍";
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            opacity: 0.5;
+        }
+
+        .btn-export {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--accent-success);
+            color: var(--accent-success);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-export:hover {
+            background: var(--accent-success);
+            color: white;
+        }
+
+        /* Results table container */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.02);
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-primary);
+        }
+
+        /* Highlight classes */
+        .price-col {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .cheapest-cell {
+            background: rgba(16, 185, 129, 0.12) !important;
+            color: var(--accent-success) !important;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 4px;
+        }
+
+        .attention-cell {
+            background: rgba(245, 158, 11, 0.08) !important;
+            color: var(--accent-warning) !important;
+        }
+
+        .saving-tag {
+            font-size: 11px;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-success);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        /* Loading spinner */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notification styles */
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Print styling (A4 Landscape, optimized for maximum paper saving) */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 20mm; /* 2cm safety margins on all sides for document archiving and binding */
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 10pt !important;
+                font-family: 'Sarabun', sans-serif !important;
+            }
+            .top-panel, .actions-bar, .loading-overlay, .helper-btn-group, .btn-export, .btn-print, .segmented-control, .mode-container {
+                display: none !important;
+            }
+            .app-container, .main-panel {
+                padding: 0 !important;
+                margin: 0 !important;
+                background: none !important;
+                box-shadow: none !important;
+                border: none !important;
+                overflow: visible !important;
+            }
+            .print-header {
+                display: block !important;
+                margin-bottom: 12px;
+                border-bottom: 2px solid #333;
+                padding-bottom: 6px;
+            }
+            .print-header h1 {
+                font-size: 15pt;
+                font-weight: 700;
+                margin: 0 0 3px 0;
+                color: black;
+            }
+            .print-header p {
+                font-size: 9pt;
+                color: #444;
+                margin: 0;
+            }
+            .table-container {
+                box-shadow: none !important;
+                border: 1px solid #333 !important;
+                background: white !important;
+                border-radius: 0 !important;
+                overflow: visible !important;
+            }
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                font-size: 9pt !important; /* Compressed to save space */
+            }
+            th, td {
+                padding: 3px 5px !important; /* Tighter padding for eco printing */
+                border: 1px solid #777 !important; /* Thin gray borders */
+                color: black !important;
+                background: white !important;
+                word-break: break-word !important;
+            }
+            th {
+                font-weight: bold !important;
+                background: #eaeaea !important;
+            }
+            .price-col {
+                text-align: right !important;
+            }
+            tr {
+                page-break-inside: avoid !important;
+            }
+            .cheapest-cell {
+                background: #e6f4ea !important;
+                border: 1.5px solid #137333 !important;
+                font-weight: bold !important;
+            }
+            .saving-tag {
+                font-weight: bold !important;
+                color: #137333 !important;
+                font-size: 7.5pt !important;
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+            .category-badge {
+                border: 1px solid #bbb !important;
+                background: #fafafa !important;
+                color: #333 !important;
+                font-size: 7.5pt !important;
+                padding: 1px 3px !important;
+            }
+        }
+
+        .print-header {
+            display: none;
+        }
+
+        .btn-print {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid var(--accent-primary);
+            color: #93c5fd;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-print:hover {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div style="font-weight: 600;">กำลังดึงข้อมูลและดำเนินการเปรียบเทียบราคาจาก TPSO...</div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- Top control panel -->
+        <header class="top-panel">
+            <!-- Row 1: Logo & Mode Selection & Fetch Button -->
+            <div class="top-panel-row-1">
+                <div class="logo-section">
+                    <h1>ระบบดึงข้อมูลราคาวัสดุก่อสร้างกระทรวงพาณิชย์และเปรียบเทียบราคา</h1>
+                    <p>พัฒนาโดย yotathai</p>
+                </div>
+                
+                <div class="mode-container" style="gap: 16px;">
+                    <div class="segmented-control">
+                        <input type="radio" name="displayMode" id="modeSingle" value="single" onchange="onModeChange()">
+                        <label for="modeSingle">🟢 จังหวัดเดียว</label>
+                        
+                        <input type="radio" name="displayMode" id="modeNeighbors" value="neighbors" checked onchange="onModeChange()">
+                        <label for="modeNeighbors">🔵 ข้างเคียง</label>
+                        
+                        <input type="radio" name="displayMode" id="modeCustom" value="custom" onchange="onModeChange()">
+                        <label for="modeCustom">🟣 กำหนดเอง</label>
+
+                        <input type="radio" name="displayMode" id="modeYearly" value="yearly" onchange="onModeChange()">
+                        <label for="modeYearly">🟡 ดูทั้งปี (12 เดือน)</label>
+
+                        <input type="radio" name="displayMode" id="modeHistory" value="history" onchange="onModeChange()">
+                        <label for="modeHistory">🟠 เทียบย้อนหลัง (1-3 เดือน)</label>
+                    </div>
+                    
+                    <button class="btn-fetch" onclick="fetchAndCompare()">⚡ ดึงข้อมูลและเปรียบเทียบ</button>
+                </div>
+            </div>
+
+            <!-- Row 2: Query Inputs Grid -->
+            <div class="top-panel-row-2">
+                <!-- Col 1: Year & Month selection -->
+                <div class="form-group">
+                    <label>ช่วงเวลาข้อมูล</label>
+                    <div class="form-row-group">
+                        <select id="yearSelect" style="flex: 1;">
+                            <!-- Dynamic -->
+                        </select>
+                        <select id="monthSelect" style="flex: 1.2;">
+                            <option value="1">มกราคม (1)</option>
+                            <option value="2">กุมภาพันธ์ (2)</option>
+                            <option value="3">มีนาคม (3)</option>
+                            <option value="4">เมษายน (4)</option>
+                            <option value="5">พฤษภาคม (5)</option>
+                            <option value="6">มิถุนายน (6)</option>
+                            <option value="7">กรกฎาคม (7)</option>
+                            <option value="8">สิงหาคม (8)</option>
+                            <option value="9">กันยายน (9)</option>
+                            <option value="10">ตุลาคม (10)</option>
+                            <option value="11">พฤศจิกายน (11)</option>
+                            <option value="12">ธันวาคม (12)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Col 2: Target Province -->
+                <div class="form-group">
+                    <label for="targetProvince">จังหวัดหลักที่ตั้งโครงการ</label>
+                    <select id="targetProvince" onchange="onTargetProvinceChange()">
+                        <!-- Dynamic -->
+                    </select>
+                </div>
+
+                <!-- Col 3: Central check option -->
+                <div class="form-group" style="justify-content: flex-end;">
+                    <div style="display: flex; align-items: center; gap: 10px; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); padding: 12px 16px; border-radius: 8px; height: 48px;">
+                        <input type="checkbox" id="compareCentral" checked style="cursor: pointer; width: 18px; height: 18px; margin: 0;">
+                        <label for="compareCentral" style="font-size: 13px; font-weight: 600; cursor: pointer; color: var(--accent-warning); margin: 0; line-height: 1; user-select: none;">เปรียบเทียบกับส่วนกลาง (กรุงเทพมหานคร)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: Selected chips tag wrapper + action buttons -->
+            <div class="top-panel-row-3" id="comparisonWrapper">
+                <div class="comparison-disabled-overlay">🔒 ปิดใช้งานการเลือกจังหวัดเปรียบเทียบในโหมดจังหวัดเดียว</div>
+                
+                <!-- Chip tags container -->
+                <div class="tags-container">
+                    <span class="tags-label">จังหวัดที่เปรียบเทียบ:</span>
+                    <div id="selectedChipsWrapper" class="tags-container" style="display: inline-flex;">
+                        <!-- Dynamic chips -->
+                        <span class="no-tags-placeholder">ยังไม่ได้เลือกจังหวัด</span>
+                    </div>
+                </div>
+
+                <!-- Helper controls -->
+                <div class="helper-btn-group">
+                    <button class="btn-helper" onclick="selectNoProvinces()">🧹 ล้างทั้งหมด</button>
+                    <button class="btn-helper" onclick="selectNeighborProvinces()">📍 เลือกข้างเคียง</button>
+                    <button class="btn-toggle-drawer" onclick="toggleProvinceDrawer()">🗺️ เปิดแผงเลือกจังหวัด (74 จังหวัด)</button>
+                </div>
+            </div>
+
+            <!-- Row 4 (Collapsible Drawer): Thailand Regions Checkboxes Grid -->
+            <div class="province-drawer" id="provinceDrawer">
+                <div class="regions-grid">
+                    <!-- Central & East Card -->
+                    <div class="region-card">
+                        <div class="region-title">
+                            <span>ภาคกลาง / ภาคตะวันออก</span>
+                            <span class="count" id="countCentralEast">0</span>
+                        </div>
+                        <div class="region-checkboxes" id="regionCentralEast">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+                    <!-- North Card -->
+                    <div class="region-card">
+                        <div class="region-title">
+                            <span>ภาคเหนือ</span>
+                            <span class="count" id="countNorth">0</span>
+                        </div>
+                        <div class="region-checkboxes" id="regionNorth">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+                    <!-- Northeast (Isan) Card -->
+                    <div class="region-card">
+                        <div class="region-title">
+                            <span>ภาคตะวันออกเฉียงเหนือ</span>
+                            <span class="count" id="countNortheast">0</span>
+                        </div>
+                        <div class="region-checkboxes" id="regionNortheast">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+                    <!-- South Card -->
+                    <div class="region-card">
+                        <div class="region-title">
+                            <span>ภาคใต้</span>
+                            <span class="count" id="countSouth">0</span>
+                        </div>
+                        <div class="region-checkboxes" id="regionSouth">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Panel -->
+        <main class="main-panel">
+            <!-- Print-Only Header -->
+            <div class="print-header">
+                <h1 id="printTitle">รายงานราคาวัสดุก่อสร้างกระทรวงพาณิชย์และเปรียบเทียบราคา</h1>
+                <p id="printSubtitle">พัฒนาโดย yotathai</p>
+                <p id="printMeta" style="margin-top: 4px; font-weight: bold;"></p>
+            </div>
+            
+            <div class="header-bar">
+                <div class="header-info">
+                    <h2 id="summaryTitle">ตารางเปรียบเทียบข้อมูลราคาวัสดุก่อสร้าง</h2>
+                    <p id="summaryDesc">กรุณาเลือกจังหวัดและช่วงเวลาที่ต้องการดึงข้อมูลในแผงควบคุมด้านบน</p>
+                </div>
+            </div>
+
+            <div class="actions-bar">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" placeholder="พิมพ์เพื่อค้นหาชื่อวัสดุ หรือ รหัสสินค้า..." oninput="filterTable()">
+                </div>
+                <div class="search-status" id="searchStatus" style="display:none; align-items:center; gap:8px; font-size:12px; background:rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.2); padding:6px 12px; border-radius:6px; color:#f59e0b;">
+                    <span>⚠️ ค้นหาล่วงหน้า: ข้อมูลถูกกรองจากเซิร์ฟเวอร์</span>
+                    <button onclick="clearServerFilter()" style="background:none; border:none; color:#60a5fa; cursor:pointer; text-decoration:underline; font-weight:700; padding:0; font-family:inherit; font-size:12px;">ดึงข้อมูลทั้งหมด</button>
+                </div>
+                <div class="form-group" style="min-width: 200px;">
+                    <select id="categoryFilter" onchange="filterTable()">
+                        <option value="all">แสดงทุกหมวดหมู่</option>
+                        <option value="01">01 - คอนกรีตผสมเสร็จ</option>
+                        <option value="02">02 - อิฐ/บล็อก</option>
+                        <option value="03">03 - เสารั้วสำเร็จรูป</option>
+                        <option value="04">04 - เหล็กเส้นกลม/ข้ออ้อย</option>
+                        <option value="05">05 - ท่อเหล็กสี่เหลี่ยม/กลวง</option>
+                        <option value="06">06 - ลวดหนาม/มุ้งลวด</option>
+                        <option value="07">07 - ฉนวนกันความร้อน</option>
+                        <option value="08">08 - กระเบื้องมุงหลังคา</option>
+                        <option value="09">09 - ไม้อัด/ซีเมนต์ใยหิน</option>
+                        <option value="10">10 - กระเบื้องปูพื้น/ผนัง</option>
+                        <option value="11">11 - ไม้แปรรูป</option>
+                        <option value="12">12 - สีทาอาคาร</option>
+                        <option value="13">13 - กระดาษทรายขัดไม้</option>
+                        <option value="14">14 - ประตู/วงกบประตู</option>
+                        <option value="15">15 - ปูนซีเมนต์ถุง</option>
+                        <option value="16">16 - หิน-ดิน-ทราย คอนกรีต</option>
+                        <option value="17">17 - วัสดุถม (หินคลุก/ลูกรัง)</option>
+                        <option value="18">18 - สุขภัณฑ์/ก๊อกน้ำ</option>
+                        <option value="19">19 - ถังซีเมนต์/ถังน้ำ</option>
+                        <option value="20">20 - สายไฟ VAF/ท่อไฟ</option>
+                        <option value="21">21 - เซรามิกห้องน้ำ</option>
+                    </select>
+                </div>
+                <button class="btn-print" onclick="window.print()">🖨️ พิมพ์รายงาน A4 (แนวนอน)</button>
+                <button class="btn-export" onclick="exportCSV()">📥 ส่งออกข้อมูล (CSV)</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr id="tableHeaderRow">
+                            <th>รหัสสินค้า</th>
+                            <th>รายการวัสดุก่อสร้าง</th>
+                            <th>หน่วย</th>
+                            <th class="price-col">ราคาหลัก (บาท)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="4" class="no-data">กรุณาเลือกข้อมูลและกด ดึงข้อมูลด้านบน</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let masterData = null;
+        let neighborsMap = {};
+        let comparisonResults = []; // Saved comparison data for filter & export
+        let isServerFiltered = false;
+
+        function clearServerFilter() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchStatus').style.display = 'none';
+            isServerFiltered = false;
+            fetchAndCompare();
+        }
+
+        // Map category codes to Thai display names
+        const CATEGORIES = {
+            "01": "คอนกรีตผสมเสร็จ",
+            "02": "อิฐ/บล็อก",
+            "03": "เสารั้วสำเร็จรูป",
+            "04": "เหล็กเส้นกลม/ข้ออ้อย",
+            "05": "ท่อเหล็กสี่เหลี่ยม/กลวง",
+            "06": "ลวดหนาม/มุ้งลวด",
+            "07": "ฉนวนกันความร้อน",
+            "08": "กระเบื้องมุงหลังคา",
+            "09": "ไม้อัด/ซีเมนต์ใยหิน",
+            "10": "กระเบื้องปูพื้น/ผนัง",
+            "11": "ไม้แปรรูป",
+            "12": "สีทาอาคาร",
+            "13": "กระดาษทรายขัดไม้",
+            "14": "ประตู/วงกบประตู",
+            "15": "ปูนซีเมนต์ถุง",
+            "16": "หิน-ดิน-ทราย คอนกรีต",
+            "17": "วัสดุถม (หินคลุก/ลูกรัง)",
+            "18": "สุขภัณฑ์/ก๊อกน้ำ",
+            "19": "ถังซีเมนต์/ถังน้ำ",
+            "20": "สายไฟ VAF/ท่อไฟ",
+            "21": "เซรามิกห้องน้ำ"
+        };
+
+        const monthNamesShort = ["", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+
+        // Regional boundaries in TPSO codes
+        const REGIONS = {
+            CENTRAL_EAST: 'central_east',
+            NORTH: 'north',
+            NORTHEAST: 'northeast',
+            SOUTH: 'south'
+        };
+
+        function getProvinceRegion(codeStr) {
+            const code = parseInt(codeStr, 10);
+            if (code === 10 || (code >= 14 && code <= 19) || (code >= 20 && code <= 27) || (code >= 70 && code <= 77)) {
+                return REGIONS.CENTRAL_EAST;
+            }
+            if (code >= 30 && code <= 49) {
+                return REGIONS.NORTHEAST;
+            }
+            if (code >= 50 && code <= 67) {
+                return REGIONS.NORTH;
+            }
+            if (code >= 80 && code <= 96) {
+                return REGIONS.SOUTH;
+            }
+            return REGIONS.CENTRAL_EAST; // Fallback
+        }
+
+        function getPastMonthLabel(year, month, offset) {
+            let m = month - offset;
+            let y = year;
+            while (m < 1) {
+                m += 12;
+                y -= 1;
+            }
+            const shortYear = String(y).substring(2);
+            return `${monthNamesShort[m]} ${shortYear}`;
+        }
+
+        // Initialize application
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadMasterData();
+            await loadNeighborsMap();
+        });
+
+        async function loadMasterData() {
+            try {
+                const response = await fetch('/api/tpso/CmiPrice/Month/MasterData');
+                masterData = await response.json();
+                
+                // Populate provinces target select and regional checkboxes in the drawer
+                const targetSelect = document.getElementById('targetProvince');
+                const regionCentralEast = document.getElementById('regionCentralEast');
+                const regionNorth = document.getElementById('regionNorth');
+                const regionNortheast = document.getElementById('regionNortheast');
+                const regionSouth = document.getElementById('regionSouth');
+                
+                targetSelect.innerHTML = '';
+                regionCentralEast.innerHTML = '';
+                regionNorth.innerHTML = '';
+                regionNortheast.innerHTML = '';
+                regionSouth.innerHTML = '';
+                
+                let countCentralEast = 0;
+                let countNorth = 0;
+                let countNortheast = 0;
+                let countSouth = 0;
+                
+                masterData.types.forEach(prov => {
+                    // Option for dropdown
+                    const opt = document.createElement('option');
+                    opt.value = prov.code;
+                    opt.textContent = prov.name;
+                    if(prov.code === "14") opt.selected = true; // default Ayutthaya
+                    targetSelect.appendChild(opt);
+                    
+                    // Exclude Bangkok ("10") from manual check-list (handled by dedicated checkbox)
+                    if (prov.code === "10") {
+                        return;
+                    }
+                    
+                    // Checkbox for comparison
+                    const label = document.createElement('label');
+                    label.className = 'province-checkbox-label';
+                    label.innerHTML = `
+                        <input type="checkbox" value="${prov.code}" data-name="${prov.name}" onchange="onCheckboxManualChange()">
+                        <span>${prov.name}</span>
+                    `;
+                    
+                    const region = getProvinceRegion(prov.code);
+                    if (region === REGIONS.CENTRAL_EAST) {
+                        regionCentralEast.appendChild(label);
+                        countCentralEast++;
+                    } else if (region === REGIONS.NORTH) {
+                        regionNorth.appendChild(label);
+                        countNorth++;
+                    } else if (region === REGIONS.NORTHEAST) {
+                        regionNortheast.appendChild(label);
+                        countNortheast++;
+                    } else if (region === REGIONS.SOUTH) {
+                        regionSouth.appendChild(label);
+                        countSouth++;
+                    }
+                });
+
+                // Update count badges
+                document.getElementById('countCentralEast').textContent = countCentralEast;
+                document.getElementById('countNorth').textContent = countNorth;
+                document.getElementById('countNortheast').textContent = countNortheast;
+                document.getElementById('countSouth').textContent = countSouth;
+
+                // Populate available years (BE) from periods
+                const yearSelect = document.getElementById('yearSelect');
+                yearSelect.innerHTML = '';
+                
+                const period = masterData.dataAvailablePeriods[0];
+                const startYear = period.startYear || 2545;
+                const endYear = period.endYear || 2569;
+                
+                for (let y = endYear; y >= startYear; y--) {
+                    const opt = document.createElement('option');
+                    opt.value = y;
+                    opt.textContent = y;
+                    if (y === endYear) opt.selected = true;
+                    yearSelect.appendChild(opt);
+                }
+                
+                // Set default month
+                document.getElementById('monthSelect').value = period.endPeriod || 5;
+                
+                // Auto trigger neighbor selection for Ayutthaya initially
+                setTimeout(onTargetProvinceChange, 100);
+
+            } catch (err) {
+                console.error("Error loading master data:", err);
+            }
+        }
+
+        async function loadNeighborsMap() {
+            try {
+                const response = await fetch('/provinces_neighbors.json');
+                neighborsMap = await response.json();
+            } catch (err) {
+                console.error("Error loading neighbors mapping:", err);
+            }
+        }
+
+        // Toggle collapsible selection drawer
+        function toggleProvinceDrawer() {
+            const drawer = document.getElementById('provinceDrawer');
+            const btn = document.querySelector('.btn-toggle-drawer');
+            
+            if (drawer.classList.contains('open')) {
+                drawer.classList.remove('open');
+                btn.textContent = '🗺️ เปิดแผงเลือกจังหวัด (74 จังหวัด)';
+            } else {
+                drawer.classList.add('open');
+                btn.textContent = '🗺️ ปิดแผงเลือกจังหวัด';
+            }
+        }
+
+        // Draw selected tags dynamically
+        function renderSelectedChips() {
+            const wrapper = document.getElementById('selectedChipsWrapper');
+            const checkedBoxes = document.querySelectorAll('.region-checkboxes input[type="checkbox"]:checked');
+            
+            wrapper.innerHTML = '';
+            
+            if (checkedBoxes.length === 0) {
+                const span = document.createElement('span');
+                span.className = 'no-tags-placeholder';
+                span.textContent = 'ยังไม่ได้เลือกจังหวัด';
+                wrapper.appendChild(span);
+                return;
+            }
+            
+            checkedBoxes.forEach(cb => {
+                const code = cb.value;
+                const name = cb.getAttribute('data-name');
+                
+                const chip = document.createElement('div');
+                chip.className = 'chip-tag';
+                chip.innerHTML = `
+                    <span>${name}</span>
+                    <span class="close-btn" onclick="removeProvinceTag('${code}')">✕</span>
+                `;
+                wrapper.appendChild(chip);
+            });
+        }
+
+        // Tag dismissal handler
+        function removeProvinceTag(code) {
+            const cb = document.querySelector(`.region-checkboxes input[type="checkbox"][value="${code}"]`);
+            if (cb) {
+                cb.checked = false;
+            }
+            
+            // Auto switch to custom mode
+            const customRadio = document.getElementById('modeCustom');
+            if (!customRadio.checked) {
+                customRadio.checked = true;
+                onModeChange();
+            } else {
+                renderSelectedChips();
+            }
+        }
+
+        // Handle display mode selection changes
+        function onModeChange() {
+            const mode = document.querySelector('input[name="displayMode"]:checked').value;
+            const wrapper = document.getElementById('comparisonWrapper');
+            const compareCentral = document.getElementById('compareCentral');
+            
+            if (mode === 'single' || mode === 'yearly' || mode === 'history') {
+                wrapper.classList.add('comparison-disabled');
+                if (compareCentral) compareCentral.disabled = true;
+                
+                // Clear all selection checkboxes
+                const checkboxes = document.querySelectorAll('.region-checkboxes input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = false);
+            } else {
+                wrapper.classList.remove('comparison-disabled');
+                if (compareCentral) compareCentral.disabled = false;
+                
+                if (mode === 'neighbors') {
+                    onTargetProvinceChange(); // Auto check neighbors
+                }
+            }
+            
+            renderSelectedChips();
+        }
+
+        function selectNoProvinces() {
+            const checkboxes = document.querySelectorAll('.region-checkboxes input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            
+            // Switch to custom mode since selections are cleared
+            const customRadio = document.getElementById('modeCustom');
+            if (!customRadio.checked) {
+                customRadio.checked = true;
+                onModeChange();
+            } else {
+                renderSelectedChips();
+            }
+        }
+
+        function selectNeighborProvinces() {
+            // Simply switch to neighbors mode, which automatically handles selecting neighbors
+            const neighborsRadio = document.getElementById('modeNeighbors');
+            neighborsRadio.checked = true;
+            onModeChange();
+        }
+
+        function onCheckboxManualChange() {
+            // Switch to custom mode when checkbox is checked/unchecked manually
+            const customRadio = document.getElementById('modeCustom');
+            if (!customRadio.checked) {
+                customRadio.checked = true;
+                onModeChange();
+            } else {
+                renderSelectedChips();
+            }
+        }
+
+        // When user changes target province, auto-check neighboring provinces
+        function onTargetProvinceChange() {
+            const mode = document.querySelector('input[name="displayMode"]:checked').value;
+            const target = document.getElementById('targetProvince').value;
+            
+            // Always prevent matching target province selection inside the drawer
+            const targetCheckbox = document.querySelector(`.region-checkboxes input[type="checkbox"][value="${target}"]`);
+            if (targetCheckbox) {
+                targetCheckbox.checked = false;
+            }
+
+            if (mode === 'single' || mode === 'yearly' || mode === 'history') {
+                const checkboxes = document.querySelectorAll('.region-checkboxes input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = false);
+                renderSelectedChips();
+                return;
+            }
+            
+            if (mode === 'neighbors') {
+                const neighbors = neighborsMap[target] || [];
+                const checkboxes = document.querySelectorAll('.region-checkboxes input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    if (neighbors.includes(cb.value) && cb.value !== target) {
+                        cb.checked = true;
+                    } else {
+                        cb.checked = false;
+                    }
+                });
+                renderSelectedChips();
+            } else if (mode === 'custom') {
+                renderSelectedChips();
+            }
+        }
+
+        async function fetchPriceForProvince(year, month, provinceCode) {
+            const response = await fetch('/api/tpso/CmiPrice/Month', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    year: parseInt(year, 10),
+                    month: parseInt(month, 10),
+                    type: parseInt(provinceCode, 10)
+                })
+            });
+            if (!response.ok) return [];
+            return await response.json();
+        }
+
+        // Fetch comparison price data directly client-side
+        async function fetchAndCompare() {
+            const year = document.getElementById('yearSelect').value;
+            const month = document.getElementById('monthSelect').value;
+            const target = document.getElementById('targetProvince').value;
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            const mode = document.querySelector('input[name="displayMode"]:checked').value;
+            let compareProvs = [];
+            
+            if (mode !== 'single' && mode !== 'yearly' && mode !== 'history') {
+                // Get selected comparison provinces
+                const checkedBoxes = document.querySelectorAll('.region-checkboxes input[type="checkbox"]:checked');
+                compareProvs = Array.from(checkedBoxes).map(cb => cb.value);
+                
+                // Auto add Central if checked
+                const compareCentral = document.getElementById('compareCentral').checked;
+                if (compareCentral && !compareProvs.includes("10") && target !== "10") {
+                    compareProvs.push("10");
+                }
+            }
+            
+            const targetName = document.getElementById('targetProvince').options[document.getElementById('targetProvince').selectedIndex].text;
+            
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            try {
+                if (mode === 'yearly') {
+                    // Fetch months 1 to 12 concurrently in browser
+                    const months = Array.from({length: 12}, (_, i) => i + 1);
+                    const promises = months.map(m => fetchPriceForProvince(year, m, target));
+                    const results = await Promise.all(promises);
+                    
+                    const allCommodities = {};
+                    results.forEach((monthData, idx) => {
+                        const mStr = String(idx + 1);
+                        monthData.forEach(item => {
+                            const code = item.commodityCode;
+                            if (!code) return;
+                            if (query && !item.commodityNameTH.toLowerCase().includes(query) && !code.includes(query)) return;
+                            
+                            if (!allCommodities[code]) {
+                                allCommodities[code] = {
+                                    commodityCode: code,
+                                    commodityNameTH: item.commodityNameTH,
+                                    unitName: item.unitName,
+                                    prices: {}
+                                };
+                            }
+                            allCommodities[code].prices[mStr] = item.priceCur;
+                        });
+                    });
+                    
+                    comparisonResults = Object.values(allCommodities).map(item => {
+                        for (let m = 1; m <= 12; m++) {
+                            if (item.prices[String(m)] === undefined) {
+                                item.prices[String(m)] = null;
+                            }
+                        }
+                        return item;
+                    });
+                }
+                else if (mode === 'history') {
+                    function getPreviousPeriod(y, m, offset) {
+                        let out_m = m - offset;
+                        let out_y = y;
+                        while (out_m < 1) {
+                            out_m += 12;
+                            out_y -= 1;
+                        }
+                        return { year: out_y, month: out_m };
+                    }
+                    
+                    const periods = [];
+                    for (let offset = 0; offset < 4; offset++) {
+                        periods.push(getPreviousPeriod(parseInt(year, 10), parseInt(month, 10), offset));
+                    }
+                    
+                    const promises = periods.map(p => fetchPriceForProvince(p.year, p.month, target));
+                    const results = await Promise.all(promises);
+                    
+                    const allCommodities = {};
+                    results.forEach((periodData, offset) => {
+                        const offsetStr = String(offset);
+                        periodData.forEach(item => {
+                            const code = item.commodityCode;
+                            if (!code) return;
+                            if (query && !item.commodityNameTH.toLowerCase().includes(query) && !code.includes(query)) return;
+                            
+                            if (!allCommodities[code]) {
+                                allCommodities[code] = {
+                                    commodityCode: code,
+                                    commodityNameTH: item.commodityNameTH,
+                                    unitName: item.unitName,
+                                    prices: {},
+                                    periods: {}
+                                };
+                            }
+                            allCommodities[code].prices[offsetStr] = item.priceCur;
+                            allCommodities[code].periods[offsetStr] = {
+                                year: periods[offset].year,
+                                month: periods[offset].month
+                            };
+                        });
+                    });
+                    
+                    comparisonResults = Object.values(allCommodities).map(item => {
+                        for (let offset = 0; offset < 4; offset++) {
+                            const offsetStr = String(offset);
+                            if (item.prices[offsetStr] === undefined) {
+                                item.prices[offsetStr] = null;
+                            }
+                            if (!item.periods[offsetStr]) {
+                                item.periods[offsetStr] = {
+                                    year: periods[offset].year,
+                                    month: periods[offset].month
+                                };
+                            }
+                        }
+                        return item;
+                    });
+                }
+                else {
+                    const targetPromise = fetchPriceForProvince(year, month, target);
+                    const comparePromises = compareProvs.map(pCode => fetchPriceForProvince(year, month, pCode));
+                    
+                    const [targetData, ...compareDataResults] = await Promise.all([targetPromise, ...comparePromises]);
+                    
+                    const comparisonResultsMap = {};
+                    compareProvs.forEach((pCode, idx) => {
+                        comparisonResultsMap[pCode] = {};
+                        compareDataResults[idx].forEach(item => {
+                            if (item.commodityCode) {
+                                comparisonResultsMap[pCode][item.commodityCode] = item;
+                            }
+                        });
+                    });
+                    
+                    const allCommodities = {};
+                    
+                    targetData.forEach(item => {
+                        const code = item.commodityCode;
+                        if (!code) return;
+                        if (query && !item.commodityNameTH.toLowerCase().includes(query) && !code.includes(query)) return;
+                        
+                        allCommodities[code] = {
+                            commodityCode: code,
+                            commodityNameTH: item.commodityNameTH,
+                            unitName: item.unitName,
+                            prices: {}
+                        };
+                        allCommodities[code].prices[target] = item.priceCur;
+                    });
+                    
+                    compareProvs.forEach(pCode => {
+                        const pData = comparisonResultsMap[pCode];
+                        Object.keys(pData).forEach(code => {
+                            const item = pData[code];
+                            if (query && !item.commodityNameTH.toLowerCase().includes(query) && !code.includes(query)) return;
+                            
+                            if (!allCommodities[code]) {
+                                allCommodities[code] = {
+                                    commodityCode: code,
+                                    commodityNameTH: item.commodityNameTH,
+                                    unitName: item.unitName,
+                                    prices: {}
+                                };
+                            }
+                            allCommodities[code].prices[pCode] = item.priceCur;
+                        });
+                    });
+                    
+                    comparisonResults = Object.values(allCommodities).map(item => {
+                        const targetPrice = item.prices[target] !== undefined ? item.prices[target] : null;
+                        item.prices[target] = targetPrice;
+                        
+                        let cheapestCode = null;
+                        let cheapestVal = null;
+                        
+                        if (targetPrice !== null && targetPrice > 0) {
+                            cheapestVal = targetPrice;
+                            cheapestCode = target;
+                        }
+                        
+                        compareProvs.forEach(pCode => {
+                            const price = item.prices[pCode] !== undefined ? item.prices[pCode] : null;
+                            item.prices[pCode] = price;
+                            
+                            if (price !== null && price > 0) {
+                                if (cheapestVal === null || cheapestVal === 0 || price < cheapestVal) {
+                                    cheapestVal = price;
+                                    cheapestCode = pCode;
+                                }
+                            }
+                        });
+                        
+                        item.cheapestProvinceCode = cheapestCode;
+                        item.cheapestPrice = cheapestVal;
+                        return item;
+                    });
+                }
+                
+                // Update table header and body
+                updateTableHeader(targetName, compareProvs);
+                renderTable(target, compareProvs);
+                
+                // Show/hide server query status
+                if (query) {
+                    document.getElementById('searchStatus').style.display = 'flex';
+                    isServerFiltered = true;
+                } else {
+                    document.getElementById('searchStatus').style.display = 'none';
+                    isServerFiltered = false;
+                }
+                
+                // Update header desc
+                let descText = "";
+                if (mode === 'yearly') {
+                    descText = `แสดงผลราคาเปรียบเทียบ ทั้งปี พ.ศ. ${year} ณ จังหวัดหลัก ${targetName}`;
+                } else if (mode === 'history') {
+                    descText = `แสดงผลราคาเปรียบเทียบย้อนหลัง 3 เดือน ณ จังหวัดหลัก ${targetName} (เกณฑ์ ณ เดือนที่ ${month} ปี พ.ศ. ${year})`;
+                } else {
+                    descText = `แสดงผลราคาเปรียบเทียบ ณ จังหวัดหลัก ${targetName} ประจำปี พ.ศ. ${year} เดือนที่ ${month}`;
+                }
+                
+                document.getElementById('summaryDesc').textContent = descText;
+
+                // Update print-only header metadata
+                const printMeta = document.getElementById('printMeta');
+                if (printMeta) {
+                    printMeta.textContent = `${descText} | วันที่ออกรายงาน: ${new Date().toLocaleString('th-TH')}`;
+                }
+                
+            } catch (err) {
+                alert("เกิดข้อผิดพลาดในการดึงข้อมูล: " + err.message);
+                console.error(err);
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+
+        function updateTableHeader(targetName, compareCodes) {
+            const tr = document.getElementById('tableHeaderRow');
+            const mode = document.querySelector('input[name="displayMode"]:checked').value;
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const month = parseInt(document.getElementById('monthSelect').value);
+            
+            // Reset to defaults
+            tr.innerHTML = `
+                <th>รหัสสินค้า</th>
+                <th>รายการวัสดุก่อสร้าง</th>
+                <th>หน่วย</th>
+            `;
+            
+            if (mode === 'single') {
+                const th = document.createElement('th');
+                th.className = 'price-col';
+                th.textContent = `ราคาหลัก: ${targetName} (บาท)`;
+                tr.appendChild(th);
+                return;
+            }
+
+            if (mode === 'yearly') {
+                for (let m = 1; m <= 12; m++) {
+                    const th = document.createElement('th');
+                    th.className = 'price-col';
+                    th.textContent = `${monthNamesShort[m]}`;
+                    tr.appendChild(th);
+                }
+                return;
+            }
+
+            if (mode === 'history') {
+                // Col 0: Current
+                const th0 = document.createElement('th');
+                th0.className = 'price-col';
+                th0.textContent = `${getPastMonthLabel(year, month, 0)} (บาท)`;
+                tr.appendChild(th0);
+                
+                // Col 1: M-1
+                const th1 = document.createElement('th');
+                th1.className = 'price-col';
+                th1.textContent = `${getPastMonthLabel(year, month, 1)} (บาท)`;
+                tr.appendChild(th1);
+                
+                // Col 2: M-2
+                const th2 = document.createElement('th');
+                th2.className = 'price-col';
+                th2.textContent = `${getPastMonthLabel(year, month, 2)} (บาท)`;
+                tr.appendChild(th2);
+                
+                // Col 3: M-3
+                const th3 = document.createElement('th');
+                th3.className = 'price-col';
+                th3.textContent = `${getPastMonthLabel(year, month, 3)} (บาท)`;
+                tr.appendChild(th3);
+                
+                // Col Diff
+                const thDiff = document.createElement('th');
+                thDiff.style.textAlign = 'center';
+                thDiff.textContent = 'อัตราการเปลี่ยน (MoM)';
+                tr.appendChild(thDiff);
+                return;
+            }
+            
+            const thTarget = document.createElement('th');
+            thTarget.className = 'price-col';
+            thTarget.textContent = `หลัก: ${targetName} (บาท)`;
+            tr.appendChild(thTarget);
+
+            // Get province names mapping
+            const provinceNames = {};
+            provinceNames[document.getElementById('targetProvince').value] = targetName;
+            document.querySelectorAll('.region-checkboxes input[type="checkbox"]').forEach(cb => {
+                provinceNames[cb.value] = cb.getAttribute('data-name');
+            });
+            provinceNames["10"] = "ส่วนกลาง";
+            
+            // Add columns for comparison provinces
+            compareCodes.forEach(code => {
+                const name = provinceNames[code] || "ไม่ระบุ";
+                const th = document.createElement('th');
+                th.className = 'price-col';
+                th.textContent = `${name} (บาท)`;
+                tr.appendChild(th);
+            });
+            
+            // Add final summary columns
+            const thCheapestVal = document.createElement('th');
+            thCheapestVal.className = 'price-col';
+            thCheapestVal.textContent = 'ราคาต่ำสุดแนะนำ (บาท)';
+            tr.appendChild(thCheapestVal);
+            
+            const thCheapestName = document.createElement('th');
+            thCheapestName.style.textAlign = 'center';
+            thCheapestName.textContent = 'จังหวัดที่ราคาต่ำสุด';
+            tr.appendChild(thCheapestName);
+        }
+
+        function renderTable(targetCode, compareCodes) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            const mode = document.querySelector('input[name="displayMode"]:checked').value;
+            
+            let totalCols = 4;
+            if (mode === 'yearly') totalCols = 15;
+            else if (mode === 'history') totalCols = 8;
+            else if (mode !== 'single') totalCols = 6 + compareCodes.length;
+            
+            if (comparisonResults.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${totalCols}" class="no-data">ไม่พบข้อมูลสินค้าวัสดุก่อสร้างในช่วงเวลาดังกล่าว</td></tr>`;
+                return;
+            }
+            
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const catFilter = document.getElementById('categoryFilter').value;
+            
+            // Get selected province names map
+            const provinceNames = {};
+            provinceNames[targetCode] = document.getElementById('targetProvince').options[document.getElementById('targetProvince').selectedIndex].text;
+            document.querySelectorAll('.region-checkboxes input[type="checkbox"]').forEach(cb => {
+                provinceNames[cb.value] = cb.getAttribute('data-name');
+            });
+            provinceNames["10"] = "ส่วนกลาง";
+            
+            let displayedCount = 0;
+            
+            comparisonResults.forEach(item => {
+                const code = item.commodityCode;
+                const name = item.commodityNameTH;
+                const cat = code.substring(0, 2);
+                
+                // Search filter
+                if (query && !name.toLowerCase().includes(query) && !code.includes(query)) {
+                    return;
+                }
+                
+                // Category filter
+                if (catFilter !== 'all' && cat !== catFilter) {
+                    return;
+                }
+                
+                displayedCount++;
+                
+                const tr = document.createElement('tr');
+                const catName = CATEGORIES[cat] || "อื่นๆ";
+                
+                tr.innerHTML = `
+                    <td><code>${code}</code></td>
+                    <td>
+                        <span class="category-badge" style="margin-right:8px;">${catName}</span>
+                        ${name}
+                    </td>
+                    <td>${item.unitName || '-'}</td>
+                `;
+                
+                if (mode === 'single') {
+                    const targetPrice = item.prices[targetCode];
+                    const td = document.createElement('td');
+                    td.className = 'price-col';
+                    td.textContent = targetPrice !== null && targetPrice !== undefined ? targetPrice.toLocaleString('th-TH', {minimumFractionDigits: 2}) : '-';
+                    tr.appendChild(td);
+                }
+                else if (mode === 'yearly') {
+                    for (let m = 1; m <= 12; m++) {
+                        const price = item.prices[String(m)];
+                        const td = document.createElement('td');
+                        td.className = 'price-col';
+                        td.textContent = price !== null && price !== undefined ? price.toLocaleString('th-TH', {minimumFractionDigits: 2}) : '-';
+                        tr.appendChild(td);
+                    }
+                }
+                else if (mode === 'history') {
+                    // M, M-1, M-2, M-3 prices
+                    for (let offset = 0; offset < 4; offset++) {
+                        const price = item.prices[String(offset)];
+                        const td = document.createElement('td');
+                        td.className = 'price-col';
+                        td.textContent = price !== null && price !== undefined ? price.toLocaleString('th-TH', {minimumFractionDigits: 2}) : '-';
+                        tr.appendChild(td);
+                    }
+                    
+                    // MoM diff
+                    const currentPrice = item.prices["0"];
+                    const prevPrice = item.prices["1"];
+                    const tdDiff = document.createElement('td');
+                    tdDiff.style.textAlign = 'center';
+                    
+                    let diffHtml = "-";
+                    if (currentPrice !== null && currentPrice !== undefined && prevPrice !== null && prevPrice !== undefined && prevPrice > 0) {
+                        const pct = (((currentPrice - prevPrice) / prevPrice) * 100).toFixed(1);
+                        if (pct > 0) {
+                            diffHtml = `<span style="color:#ef4444; font-weight:700;">📈 +${pct}%</span>`;
+                        } else if (pct < 0) {
+                            diffHtml = `<span style="color:#10b981; font-weight:700;">📉 ${pct}%</span>`;
+                        } else {
+                            diffHtml = `<span style="color:var(--text-muted);">คงที่</span>`;
+                        }
+                    }
+                    tdDiff.innerHTML = diffHtml;
+                    tr.appendChild(tdDiff);
+                }
+                else {
+                    const targetPrice = item.prices[targetCode];
+                    const tdTarget = document.createElement('td');
+                    tdTarget.className = 'price-col';
+                    tdTarget.textContent = targetPrice !== null && targetPrice !== undefined ? targetPrice.toLocaleString('th-TH', {minimumFractionDigits: 2}) : '-';
+                    tr.appendChild(tdTarget);
+                    
+                    // Render comparison prices
+                    compareCodes.forEach(code => {
+                        const price = item.prices[code];
+                        const td = document.createElement('td');
+                        td.className = 'price-col';
+                        td.textContent = price !== null && price !== undefined ? price.toLocaleString('th-TH', {minimumFractionDigits: 2}) : '-';
+                        
+                        if (price === item.cheapestPrice && code === item.cheapestProvinceCode && item.cheapestProvinceCode !== targetCode) {
+                            td.className += ' cheapest-cell';
+                        }
+                        tr.appendChild(td);
+                    });
+                    
+                    const isCheaperNeighbor = item.cheapestProvinceCode !== targetCode && targetPrice !== null && item.cheapestPrice < targetPrice;
+                    
+                    const tdCheapestVal = document.createElement('td');
+                    tdCheapestVal.className = 'price-col';
+                    if (isCheaperNeighbor) {
+                        tdCheapestVal.className += ' cheapest-cell';
+                        const savings = (targetPrice - item.cheapestPrice).toFixed(2);
+                        tdCheapestVal.innerHTML = `${item.cheapestPrice.toLocaleString('th-TH', {minimumFractionDigits: 2})} <span class="saving-tag">ประหยัด ${savings}</span>`;
+                    } else {
+                        tdCheapestVal.textContent = item.cheapestPrice !== null && item.cheapestPrice !== undefined ? item.cheapestPrice.toLocaleString('th-TH', {minimumFractionDigits: 2}) : '-';
+                    }
+                    tr.appendChild(tdCheapestVal);
+                    
+                    const tdCheapestName = document.createElement('td');
+                    tdCheapestName.style.textAlign = 'center';
+                    const cheapName = provinceNames[item.cheapestProvinceCode] || '-';
+                    
+                    if (isCheaperNeighbor) {
+                        tdCheapestName.innerHTML = `<span style="font-weight:700; color:var(--accent-success);">📍 ${cheapName} (จังหวัดข้างเคียง)</span>`;
+                    } else {
+                        tdCheapestName.textContent = item.cheapestProvinceCode === targetCode ? "หลัก: " + cheapName : cheapName;
+                    }
+                    tr.appendChild(tdCheapestName);
+                }
+                
+                tbody.appendChild(tr);
+            });
+            
+            if (displayedCount === 0) {
+                tbody.innerHTML = `<tr><td colspan="${totalCols}" class="no-data">ไม่พบข้อมูลสินค้าตรงกับตัวกรองค้นหา</td></tr>`;
+            }
+        }
+
+        // Real-time table filter (search & category)
+        function filterTable() {
+            const target = document.getElementById('targetProvince').value;
+            const mode = document.querySelector('input[name="displayMode"]:checked').value;
+            let compareProvs = [];
+            
+            if (mode !== 'single' && mode !== 'yearly' && mode !== 'history') {
+                const checkedBoxes = document.querySelectorAll('.region-checkboxes input[type="checkbox"]:checked');
+                compareProvs = Array.from(checkedBoxes).map(cb => cb.value);
+                
+                const compareCentral = document.getElementById('compareCentral').checked;
+                if (compareCentral && !compareProvs.includes("10") && target !== "10") {
+                    compareProvs.push("10");
+                }
+            }
+            renderTable(target, compareProvs);
+        }
+
+        // Export data to CSV
+        function exportCSV() {
+            if (comparisonResults.length === 0) {
+                alert("ไม่มีข้อมูลที่จะส่งออก");
+                return;
+            }
+            
+            const targetCode = document.getElementById('targetProvince').value;
+            const mode = document.querySelector('input[name="displayMode"]:checked').value;
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const month = parseInt(document.getElementById('monthSelect').value);
+            let compareCodes = [];
+            
+            if (mode !== 'single' && mode !== 'yearly' && mode !== 'history') {
+                const checkedBoxes = document.querySelectorAll('.region-checkboxes input[type="checkbox"]:checked');
+                compareCodes = Array.from(checkedBoxes).map(cb => cb.value);
+                
+                const compareCentral = document.getElementById('compareCentral').checked;
+                if (compareCentral && !compareCodes.includes("10") && targetCode !== "10") {
+                    compareCodes.push("10");
+                }
+            }
+            
+            // Get selected province names mapping
+            const provinceNames = {};
+            provinceNames[targetCode] = document.getElementById('targetProvince').options[document.getElementById('targetProvince').selectedIndex].text;
+            document.querySelectorAll('.region-checkboxes input[type="checkbox"]').forEach(cb => {
+                provinceNames[cb.value] = cb.getAttribute('data-name');
+            });
+            provinceNames["10"] = "ส่วนกลาง";
+            
+            // CSV Header construction
+            let csv = '\uFEFF'; // BOM for Excel Thai reading
+            let header = ["รหัสสินค้า (Commodity Code)", "ชื่อสินค้า (Commodity Name)", "หน่วย (Unit)"];
+            
+            if (mode === 'single') {
+                header.push(`ราคาหลัก: ${provinceNames[targetCode]}`);
+            }
+            else if (mode === 'yearly') {
+                for (let m = 1; m <= 12; m++) {
+                    header.push(monthNamesShort[m]);
+                }
+            }
+            else if (mode === 'history') {
+                header.push(
+                    getPastMonthLabel(year, month, 0),
+                    getPastMonthLabel(year, month, 1),
+                    getPastMonthLabel(year, month, 2),
+                    getPastMonthLabel(year, month, 3),
+                    "อัตราการเปลี่ยน MoM (%)"
+                );
+            }
+            else {
+                header.push(`ราคาหลัก: ${provinceNames[targetCode]}`);
+                compareCodes.forEach(code => {
+                    header.push(`ราคา: ${provinceNames[code]}`);
+                });
+                header.push("ราคาต่ำสุดแนะนำ", "จังหวัดที่ราคาต่ำสุด");
+            }
+            
+            csv += header.map(h => `"${h.replace(/"/g, '""')}"`).join(',') + '\n';
+            
+            // Row data construction
+            comparisonResults.forEach(item => {
+                const code = item.commodityCode;
+                const name = item.commodityNameTH;
+                const unit = item.unitName || '';
+                
+                let row = [code, name, unit];
+                
+                if (mode === 'single') {
+                    const price = item.prices[targetCode] !== null ? item.prices[targetCode] : '';
+                    row.push(price);
+                }
+                else if (mode === 'yearly') {
+                    for (let m = 1; m <= 12; m++) {
+                        const price = item.prices[String(m)] !== null ? item.prices[String(m)] : '';
+                        row.push(price);
+                    }
+                }
+                else if (mode === 'history') {
+                    for (let offset = 0; offset < 4; offset++) {
+                        const price = item.prices[String(offset)] !== null ? item.prices[String(offset)] : '';
+                        row.push(price);
+                    }
+                    const currentPrice = item.prices["0"];
+                    const prevPrice = item.prices["1"];
+                    let diffVal = "";
+                    if (currentPrice !== null && currentPrice !== undefined && prevPrice !== null && prevPrice !== undefined && prevPrice > 0) {
+                        diffVal = (((currentPrice - prevPrice) / prevPrice) * 100).toFixed(1) + "%";
+                    }
+                    row.push(diffVal);
+                }
+                else {
+                    const targetPrice = item.prices[targetCode] !== null ? item.prices[targetCode] : '';
+                    row.push(targetPrice);
+                    
+                    compareCodes.forEach(cCode => {
+                        const price = item.prices[cCode] !== null ? item.prices[cCode] : '';
+                        row.push(price);
+                    });
+                    
+                    row.push(item.cheapestPrice !== null ? item.cheapestPrice : '');
+                    row.push(provinceNames[item.cheapestProvinceCode] || '');
+                }
+                
+                csv += row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(',') + '\n';
+            });
+            
+            // Download trigger
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `tpso_prices_${provinceNames[targetCode]}_${year}_${month}_mode_${mode}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
