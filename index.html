@@ -864,16 +864,19 @@
         }
 
         .search-wrapper {
-            flex: 1 1 280px;
-            max-width: 380px;
-            min-width: 0;
+            width: 280px;
+            flex: none;
             position: relative;
         }
 
         .search-wrapper input {
             width: 100%;
             padding-left: 40px;
-            background: rgba(17, 24, 39, 0.4);
+        }
+
+        .actions-bar .form-group {
+            width: 220px;
+            flex: none;
         }
 
         .search-wrapper::before {
