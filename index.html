@@ -868,16 +868,13 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            flex: 1 1 500px;
-            max-width: 650px;
-            width: 100%;
-            min-width: 0;
+            flex: 0 0 auto;
         }
 
         .search-wrapper {
-            flex: 3 1 280px;
+            width: 220px;
+            flex: none;
             position: relative;
-            min-width: 0;
         }
 
         .search-wrapper input {
@@ -887,9 +884,9 @@
         }
 
         .category-filter-group {
-            flex: 2 1 220px;
+            width: 200px;
+            flex: none;
             margin: 0;
-            min-width: 0;
         }
 
         .category-filter-group select {
@@ -1207,6 +1204,17 @@
             .search-filter-group {
                 flex: 1 1 100%;
                 max-width: 100%;
+                justify-content: flex-start;
+            }
+            .search-wrapper {
+                flex: 1 1 200px;
+                width: auto;
+                max-width: 300px;
+            }
+            .category-filter-group {
+                flex: 1 1 180px;
+                width: auto;
+                max-width: 250px;
             }
             .action-buttons-group {
                 flex: 1 1 100%;
