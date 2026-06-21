@@ -853,9 +853,10 @@
 
         .actions-bar {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
             gap: 16px;
-            align-items: center;
             background: var(--card-bg);
             padding: 16px 24px;
             border-radius: 12px;
@@ -863,25 +864,45 @@
             backdrop-filter: blur(10px);
         }
 
+        .search-filter-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1 1 500px;
+            max-width: 650px;
+            width: 100%;
+            min-width: 0;
+        }
+
         .search-wrapper {
-            width: 280px;
-            flex: none;
+            flex: 3 1 280px;
             position: relative;
+            min-width: 0;
         }
 
         .search-wrapper input {
             width: 100%;
             padding-left: 40px;
+            box-sizing: border-box;
         }
 
-        .actions-bar .form-group {
-            width: 220px;
-            flex: none;
+        .category-filter-group {
+            flex: 2 1 220px;
+            margin: 0;
+            min-width: 0;
         }
 
-        .actions-bar select,
-        .actions-bar input[type="text"] {
+        .category-filter-group select {
             width: 100%;
+            box-sizing: border-box;
+        }
+
+        .action-buttons-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex: 0 0 auto;
         }
 
         .search-wrapper::before {
@@ -1181,15 +1202,19 @@
             }
             .actions-bar {
                 padding: 16px 20px;
-                gap: 12px;
+                gap: 16px;
             }
-            .search-wrapper {
-                flex: 1 1 240px;
-                width: auto;
+            .search-filter-group {
+                flex: 1 1 100%;
+                max-width: 100%;
             }
-            .actions-bar .form-group {
-                flex: 1 1 200px;
-                width: auto;
+            .action-buttons-group {
+                flex: 1 1 100%;
+                justify-content: flex-start;
+            }
+            .action-buttons-group button {
+                flex: 1 1 auto;
+                justify-content: center;
             }
         }
 
@@ -1230,24 +1255,29 @@
                 padding: 12px;
             }
             .actions-bar {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 16px;
+                padding: 12px 16px;
                 gap: 12px;
             }
-            .search-wrapper {
-                max-width: 100% !important;
-                width: 100%;
+            .search-filter-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
                 flex: none !important;
+                width: 100% !important;
             }
-            .actions-bar .form-group {
-                min-width: 100% !important;
-                width: 100%;
+            .search-wrapper, .category-filter-group {
                 flex: none !important;
+                width: 100% !important;
             }
-            .actions-bar button {
-                width: 100%;
-                justify-content: center;
+            .action-buttons-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                flex: none !important;
+                width: 100% !important;
+            }
+            .action-buttons-group button {
+                width: 100% !important;
             }
             .table-container {
                 overflow-x: auto;
@@ -1460,42 +1490,48 @@
             </div>
 
             <div class="actions-bar">
-                <div class="search-wrapper">
-                    <input type="text" id="searchInput" placeholder="พิมพ์เพื่อค้นหาชื่อวัสดุ หรือ รหัสสินค้า..." oninput="filterTable()">
+                <div class="search-filter-group">
+                    <div class="search-wrapper">
+                        <input type="text" id="searchInput" placeholder="พิมพ์เพื่อค้นหาชื่อวัสดุ หรือ รหัสสินค้า..." oninput="filterTable()">
+                    </div>
+                    <div class="form-group category-filter-group">
+                        <select id="categoryFilter" onchange="filterTable()">
+                            <option value="all">แสดงทุกหมวดหมู่</option>
+                            <option value="01">01 - คอนกรีตผสมเสร็จ</option>
+                            <option value="02">02 - อิฐ/บล็อก</option>
+                            <option value="03">03 - เสารั้วสำเร็จรูป</option>
+                            <option value="04">04 - เหล็กเส้นกลม/ข้ออ้อย</option>
+                            <option value="05">05 - ท่อเหล็กสี่เหลี่ยม/กลวง</option>
+                            <option value="06">06 - ลวดหนาม/มุ้งลวด</option>
+                            <option value="07">07 - ฉนวนกันความร้อน</option>
+                            <option value="08">08 - กระเบื้องมุงหลังคา</option>
+                            <option value="09">09 - ไม้อัด/ซีเมนต์ใยหิน</option>
+                            <option value="10">10 - กระเบื้องปูพื้น/ผนัง</option>
+                            <option value="11">11 - ไม้แปรรูป</option>
+                            <option value="12">12 - สีทาอาคาร</option>
+                            <option value="13">13 - กระดาษทรายขัดไม้</option>
+                            <option value="14">14 - ประตู/วงกบประตู</option>
+                            <option value="15">15 - ปูนซีเมนต์ถุง</option>
+                            <option value="16">16 - หิน-ดิน-ทราย คอนกรีต</option>
+                            <option value="17">17 - วัสดุถม (หินคลุก/ลูกรัง)</option>
+                            <option value="18">18 - สุขภัณฑ์/ก๊อกน้ำ</option>
+                            <option value="19">19 - ถังซีเมนต์/ถังน้ำ</option>
+                            <option value="20">20 - สายไฟ VAF/ท่อไฟ</option>
+                            <option value="21">21 - เซรามิกห้องน้ำ</option>
+                        </select>
+                    </div>
                 </div>
+                
                 <div class="search-status" id="searchStatus" style="display:none; align-items:center; gap:8px; font-size:12px; background:rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.2); padding:6px 12px; border-radius:6px; color:#f59e0b;">
                     <span>⚠️ ค้นหาล่วงหน้า: ข้อมูลถูกกรองจากเซิร์ฟเวอร์</span>
                     <button onclick="clearServerFilter()" style="background:none; border:none; color:#60a5fa; cursor:pointer; text-decoration:underline; font-weight:700; padding:0; font-family:inherit; font-size:12px;">ดึงข้อมูลทั้งหมด</button>
                 </div>
-                <div class="form-group" style="min-width: 200px;">
-                    <select id="categoryFilter" onchange="filterTable()">
-                        <option value="all">แสดงทุกหมวดหมู่</option>
-                        <option value="01">01 - คอนกรีตผสมเสร็จ</option>
-                        <option value="02">02 - อิฐ/บล็อก</option>
-                        <option value="03">03 - เสารั้วสำเร็จรูป</option>
-                        <option value="04">04 - เหล็กเส้นกลม/ข้ออ้อย</option>
-                        <option value="05">05 - ท่อเหล็กสี่เหลี่ยม/กลวง</option>
-                        <option value="06">06 - ลวดหนาม/มุ้งลวด</option>
-                        <option value="07">07 - ฉนวนกันความร้อน</option>
-                        <option value="08">08 - กระเบื้องมุงหลังคา</option>
-                        <option value="09">09 - ไม้อัด/ซีเมนต์ใยหิน</option>
-                        <option value="10">10 - กระเบื้องปูพื้น/ผนัง</option>
-                        <option value="11">11 - ไม้แปรรูป</option>
-                        <option value="12">12 - สีทาอาคาร</option>
-                        <option value="13">13 - กระดาษทรายขัดไม้</option>
-                        <option value="14">14 - ประตู/วงกบประตู</option>
-                        <option value="15">15 - ปูนซีเมนต์ถุง</option>
-                        <option value="16">16 - หิน-ดิน-ทราย คอนกรีต</option>
-                        <option value="17">17 - วัสดุถม (หินคลุก/ลูกรัง)</option>
-                        <option value="18">18 - สุขภัณฑ์/ก๊อกน้ำ</option>
-                        <option value="19">19 - ถังซีเมนต์/ถังน้ำ</option>
-                        <option value="20">20 - สายไฟ VAF/ท่อไฟ</option>
-                        <option value="21">21 - เซรามิกห้องน้ำ</option>
-                    </select>
+
+                <div class="action-buttons-group">
+                    <button class="btn-print" onclick="window.print()">🖨️ พิมพ์รายงาน A4</button>
+                    <button class="btn-print btn-pdf" style="background: rgba(239, 68, 68, 0.12); border-color: #f87171; color: #fca5a5;" onclick="downloadPDF()">🔴 ดาวน์โหลด PDF</button>
+                    <button class="btn-export" onclick="exportCSV()">📥 ส่งออก CSV</button>
                 </div>
-                <button class="btn-print" onclick="window.print()">🖨️ พิมพ์รายงาน A4</button>
-                <button class="btn-print btn-pdf" style="background: rgba(239, 68, 68, 0.12); border-color: #f87171; color: #fca5a5;" onclick="downloadPDF()">🔴 ดาวน์โหลด PDF</button>
-                <button class="btn-export" onclick="exportCSV()">📥 ส่งออก CSV</button>
             </div>
 
             <div class="table-container">
