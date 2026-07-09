@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         // Immediately apply saved theme to prevent flashing
-        const savedTheme = localStorage.getItem('tpso-theme') || 'dark-blue';
+        const savedTheme = localStorage.getItem('tpso-theme') || 'light-blue';
         document.documentElement.setAttribute('data-theme', savedTheme);
     </script>
     
@@ -2629,7 +2629,7 @@
         
         // Initialize theme swatches active state on load
         window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('tpso-theme') || 'dark-blue';
+            const savedTheme = localStorage.getItem('tpso-theme') || 'light-blue';
             changeTheme(savedTheme);
         });
 
