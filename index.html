@@ -512,7 +512,7 @@
 
         .segmented-control {
             display: flex;
-            background: rgba(31, 41, 55, 0.5);
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 2px;
@@ -537,6 +537,11 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+        }
+
+        .segmented-control label:hover {
+            color: var(--text-main);
+            background: var(--table-hover-bg);
         }
 
         .segmented-control input[type="radio"]:checked + label {
