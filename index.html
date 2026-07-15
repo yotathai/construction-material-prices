@@ -1354,9 +1354,49 @@
             .footer-content .footer-divider {
                 display: none;
             }
-            .yotathai-logo {
-                height: 40px;
-            }
+        .footer-content .yotathai-logo {
+            height: 40px;
+        }
+    </style>
+    <!-- Tom Select for Searchable Dropdown -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <style>
+        /* Tom Select Theme Overrides */
+        .ts-control, .ts-wrapper.single.input-active .ts-control {
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: inherit;
+        }
+        .ts-dropdown, .ts-dropdown.single {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .ts-dropdown .option {
+            color: var(--text-main);
+            padding: 8px 12px;
+        }
+        .ts-dropdown .option:hover, .ts-dropdown .option.active {
+            background: var(--table-hover-bg);
+            color: var(--accent-primary);
+        }
+        .ts-dropdown .optgroup-header {
+            background: var(--card-bg-sub);
+            color: var(--text-main);
+            font-weight: 700;
+            padding: 6px 12px;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
+        .ts-control input {
+            color: var(--text-main) !important;
+            font-family: inherit;
         }
     </style>
 </head>
@@ -1737,13 +1777,30 @@
                 let countNortheast = 0;
                 let countSouth = 0;
                 
+                // Create optgroups for Tom Select
+                const optgroups = {
+                    [REGIONS.CENTRAL_EAST]: document.createElement('optgroup'),
+                    [REGIONS.NORTH]: document.createElement('optgroup'),
+                    [REGIONS.NORTHEAST]: document.createElement('optgroup'),
+                    [REGIONS.SOUTH]: document.createElement('optgroup')
+                };
+                optgroups[REGIONS.CENTRAL_EAST].label = "ภาคกลางและตะวันออก";
+                optgroups[REGIONS.NORTH].label = "ภาคเหนือ";
+                optgroups[REGIONS.NORTHEAST].label = "ภาคตะวันออกเฉียงเหนือ";
+                optgroups[REGIONS.SOUTH].label = "ภาคใต้";
+
                 masterData.types.forEach(prov => {
-                    // Option for dropdown
                     const opt = document.createElement('option');
                     opt.value = prov.code;
                     opt.textContent = prov.name;
                     if(prov.code === "14") opt.selected = true; // default Ayutthaya
-                    targetSelect.appendChild(opt);
+                    
+                    const region = getProvinceRegion(prov.code);
+                    if (optgroups[region]) {
+                        optgroups[region].appendChild(opt);
+                    } else {
+                        targetSelect.appendChild(opt);
+                    }
                     
                     // Exclude Bangkok ("10") from manual check-list (handled by dedicated checkbox)
                     if (prov.code === "10") {
@@ -1758,7 +1815,6 @@
                         <span>${prov.name}</span>
                     `;
                     
-                    const region = getProvinceRegion(prov.code);
                     if (region === REGIONS.CENTRAL_EAST) {
                         regionCentralEast.appendChild(label);
                         countCentralEast++;
@@ -1772,6 +1828,20 @@
                         regionSouth.appendChild(label);
                         countSouth++;
                     }
+                });
+
+                targetSelect.appendChild(optgroups[REGIONS.NORTH]);
+                targetSelect.appendChild(optgroups[REGIONS.NORTHEAST]);
+                targetSelect.appendChild(optgroups[REGIONS.CENTRAL_EAST]);
+                targetSelect.appendChild(optgroups[REGIONS.SOUTH]);
+
+                // Initialize Tom Select
+                if (window.targetProvinceTomSelect) {
+                    window.targetProvinceTomSelect.destroy();
+                }
+                window.targetProvinceTomSelect = new TomSelect('#targetProvince', {
+                    create: false,
+                    placeholder: 'พิมพ์เพื่อค้นหาจังหวัด...'
                 });
 
                 // Update count badges
